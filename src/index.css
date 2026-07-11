@@ -1,0 +1,250 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   SABBIR AHMAD — Brand System
+   Professional Editorial — Warm
+   Paper & espresso ink, vermilion + amber accents,
+   sand section bands, dark espresso feature bands,
+   monospace annotations.
+   ============================================ */
+
+@layer base {
+  :root {
+    --background: 40 36% 97%;
+    --foreground: 22 24% 12%;
+
+    --card: 42 40% 99%;
+    --card-foreground: 22 24% 12%;
+
+    --popover: 42 40% 99%;
+    --popover-foreground: 22 24% 12%;
+
+    --primary: 15 88% 47%;
+    --primary-foreground: 40 36% 97%;
+
+    --secondary: 38 28% 92%;
+    --secondary-foreground: 22 24% 12%;
+
+    --muted: 38 24% 91%;
+    --muted-foreground: 26 12% 38%;
+
+    --accent: 32 92% 50%;
+    --accent-foreground: 22 24% 12%;
+
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 40 36% 97%;
+
+    --border: 34 18% 84%;
+    --input: 34 18% 84%;
+    --ring: 15 88% 47%;
+
+    --radius: 0rem;
+
+    /* Brand tokens */
+    --ink: 22 24% 12%;
+    --paper: 40 36% 97%;
+    --vermilion: 15 88% 47%;
+    --amber: 32 92% 50%;
+    --navy: 24 26% 11%;
+    --navy-soft: 24 18% 17%;
+    --sand: 36 34% 92%;
+    --gold: 36 88% 54%;
+
+    --gradient-dark: none;
+    --gradient-card: none;
+    --gradient-glow: none;
+    --gradient-text: linear-gradient(
+      135deg,
+      hsl(14 85% 45%) 0%,
+      hsl(24 90% 50%) 100%
+    );
+
+    --shadow-glow: none;
+    --shadow-card: 0 1px 2px hsl(24 12% 9% / 0.04);
+    --shadow-hover: 0 8px 24px hsl(24 12% 9% / 0.08);
+
+    --font-heading: "Sora", "Inter", sans-serif;
+    --font-body: "Inter", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+
+    --sidebar-background: 45 30% 99%;
+    --sidebar-foreground: 24 12% 9%;
+    --sidebar-primary: 14 85% 45%;
+    --sidebar-primary-foreground: 45 33% 97%;
+    --sidebar-accent: 42 20% 92%;
+    --sidebar-accent-foreground: 24 12% 9%;
+    --sidebar-border: 40 12% 84%;
+    --sidebar-ring: 14 85% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  code,
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  ::selection {
+    background: hsl(var(--vermilion));
+    color: hsl(var(--paper));
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-6xl mx-auto px-6 lg:px-8;
+  }
+
+  /* ---- Section bands ----
+     Dark espresso band: locally overrides the theme tokens so every
+     component inside inherits the inverted palette automatically. */
+  .section-dark {
+    --background: var(--navy);
+    --foreground: 40 40% 95%;
+    --card: var(--navy-soft);
+    --card-foreground: 40 40% 95%;
+    --muted-foreground: 34 14% 66%;
+    --border: 26 14% 25%;
+    --secondary: var(--navy-soft);
+    --secondary-foreground: 40 40% 95%;
+    background-color: hsl(var(--navy));
+    color: hsl(var(--foreground));
+  }
+
+  /* Warm sand band for mid-page rhythm */
+  .section-sand {
+    --background: var(--sand);
+    --card: 45 30% 97%;
+    --border: 40 14% 80%;
+    background-color: hsl(var(--sand));
+  }
+
+  /* Soft professional wash behind the hero */
+  .bg-hero-wash {
+    background:
+      radial-gradient(ellipse 80% 60% at 85% -10%, hsl(var(--vermilion) / 0.08), transparent 60%),
+      radial-gradient(ellipse 70% 55% at 0% 105%, hsl(var(--amber) / 0.1), transparent 55%),
+      hsl(var(--background));
+  }
+
+  /* Warm directional glow for dark bands — soft amber/vermilion
+     lighting that gives depth without any grid texture. */
+  .bg-dark-glow {
+    background-image:
+      radial-gradient(62% 55% at 88% 0%, hsl(var(--amber) / 0.14), transparent 68%),
+      radial-gradient(55% 60% at 0% 100%, hsl(var(--vermilion) / 0.16), transparent 66%);
+  }
+
+  /* Centered warm halo — for placeholder media tiles */
+  .bg-dark-halo {
+    background-image:
+      radial-gradient(70% 60% at 50% 42%, hsl(var(--vermilion) / 0.16), transparent 70%);
+  }
+
+  /* Monospace eyebrow label: "01 — Selected Work" */
+  .eyebrow {
+    font-family: var(--font-mono);
+    @apply text-xs tracking-[0.2em] uppercase text-muted-foreground;
+  }
+
+  .eyebrow-index {
+    @apply text-primary;
+  }
+
+  /* Hairline rule used to open every section */
+  .rule {
+    @apply border-t border-border;
+  }
+
+  /* Editorial link: underline that thickens on hover */
+  .editorial-link {
+    @apply underline decoration-1 underline-offset-4 decoration-foreground/30 hover:decoration-primary hover:decoration-2 transition-all;
+  }
+
+  /* Legacy utility classes kept for inner pages, restyled for light theme */
+  .glass-card {
+    @apply bg-card border border-border rounded-none;
+    box-shadow: var(--shadow-card);
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300;
+  }
+
+  .glass-card-hover:hover {
+    @apply border-foreground/30;
+    box-shadow: var(--shadow-hover);
+  }
+
+  .text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-text {
+    text-shadow: none;
+  }
+
+  .glow-border {
+    @apply border border-primary/40;
+    box-shadow: none;
+  }
+
+  .badge-available {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-none text-sm font-medium;
+    background: hsl(142 60% 30% / 0.08);
+    color: hsl(142 60% 26%);
+    border: 1px solid hsl(142 60% 30% / 0.25);
+  }
+
+  .mono-accent {
+    font-family: var(--font-mono);
+    @apply text-primary;
+  }
+}
+
+@layer utilities {
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
+  }
+}
