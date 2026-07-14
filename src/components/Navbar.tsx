@@ -8,18 +8,32 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const navLinks = [
   { index: "02", label: "Work", href: "/#work", isRoute: false },
-  { index: "03", label: "Services", href: "/#services", isRoute: false },
+  { index: "03", label: "Services", href: "/#services", isRoute: false, hasDropdown: true },
   { index: "04", label: "Clients", href: "/#testimonials", isRoute: false },
   { index: "05", label: "Process", href: "/#process", isRoute: false },
   { index: "08", label: "About", href: "/#about", isRoute: false },
   { index: "10", label: "Contact", href: "/#contact", isRoute: false },
+];
+
+const serviceLinks = [
+  { label: "SaaS Development", href: "/#services" },
+  { label: "Custom Web Applications", href: "/#services" },
+  { label: "AI-Powered Applications", href: "/#services" },
+  { label: "Shopify Development", href: "/#services" },
+  { label: "WordPress & WooCommerce", href: "/#services" },
 ];
 
 const Navbar = () => {
@@ -68,17 +82,42 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              to={link.href}
-              onClick={() => handleNavClick(link.href, link.isRoute)}
-              className="group font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <span className="text-primary/60 group-hover:text-primary transition-colors mr-1.5">
-                {link.index}
-              </span>
-              {link.label}
-            </Link>
+            link.hasDropdown ? (
+              <DropdownMenu key={link.label}>
+                <DropdownMenuTrigger className="group font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 bg-transparent border-none outline-none">
+                  <span className="text-primary/60 group-hover:text-primary transition-colors mr-1.5">
+                    {link.index}
+                  </span>
+                  {link.label}
+                  <ChevronDown className="w-3 h-3 mt-0.5 group-hover:text-primary transition-colors" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="min-w-[240px]">
+                  {serviceLinks.map((service) => (
+                    <DropdownMenuItem key={service.label} asChild>
+                      <Link
+                        to={service.href}
+                        onClick={() => handleNavClick(service.href, false)}
+                        className="cursor-pointer font-mono text-xs tracking-wider"
+                      >
+                        {service.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                key={link.label}
+                to={link.href}
+                onClick={() => handleNavClick(link.href, link.isRoute)}
+                className="group font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <span className="text-primary/60 group-hover:text-primary transition-colors mr-1.5">
+                  {link.index}
+                </span>
+                {link.label}
+              </Link>
+            )
           ))}
         </div>
 
@@ -137,14 +176,34 @@ const Navbar = () => {
           >
             <div className="section-container py-6 space-y-5">
               {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  to={link.href}
-                  onClick={() => handleNavClick(link.href, link.isRoute)}
-                  className="block font-mono text-sm tracking-[0.15em] uppercase text-foreground hover:text-primary transition-colors"
-                >
-                  {link.label}
-                </Link>
+                link.hasDropdown ? (
+                  <div key={link.label} className="space-y-2">
+                    <div className="font-mono text-sm tracking-[0.15em] uppercase text-foreground">
+                      {link.label}
+                    </div>
+                    <div className="pl-4 space-y-3">
+                      {serviceLinks.map((service) => (
+                        <Link
+                          key={service.label}
+                          to={service.href}
+                          onClick={() => handleNavClick(service.href, false)}
+                          className="block font-mono text-xs tracking-wider text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          {service.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    key={link.label}
+                    to={link.href}
+                    onClick={() => handleNavClick(link.href, link.isRoute)}
+                    className="block font-mono text-sm tracking-[0.15em] uppercase text-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                )
               ))}
               <a
                 href="/resume.pdf"
