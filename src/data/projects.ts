@@ -92,18 +92,78 @@ const projects: Project[] = [
     },
 
     meta: {
-      featured: true,
       tags: ["edtech", "fastapi", "nextjs", "postgresql", "in-progress"],
+    },
+  },
+
+  {
+    id: "ai-support-001",
+    slug: "ai-customer-support",
+    title: "AI Customer Support Platform",
+    tagline: "AI-Powered Business Assistant",
+    description:
+      "An intelligent customer support solution designed to automate FAQs, collect leads, and provide instant responses using modern AI technologies.",
+
+    type: "ai-ml",
+    status: "in-progress",
+    year: 2026,
+    duration: "Ongoing",
+    visibility: "public",
+
+    media: {},
+
+    techStack: {
+      primary: ["Next.js", "AI APIs", "Node.js", "RAG", "Vector Search"],
+      frontend: ["Next.js", "TypeScript", "Tailwind CSS"],
+      backend: ["Node.js", "Express"],
+      aiMl: ["LLM APIs", "RAG Pipelines", "Vector Search", "Embeddings"],
+      database: ["PostgreSQL", "Vector Store"],
+    },
+
+    summaryMetrics: {
+      scale: "Multi-channel support architecture",
+      impact: "Automates FAQs, captures leads, and answers customers instantly",
+    },
+
+    caseStudy: {
+      role: "Product Engineer (sole developer)",
+      teamSize: 1,
+      targetUsers:
+        "Businesses that want to automate customer support and lead capture without a large support team",
+
+      problem:
+        "Small and mid-sized businesses lose leads and customers when support is slow. Hiring a 24/7 support team is expensive, and generic chatbots frustrate users because they don't know the business.",
+
+      solution:
+        "Building an AI assistant that is trained on each business's own knowledge base. It answers customer questions instantly using retrieval-augmented generation (RAG), escalates to humans when needed, and captures qualified leads automatically.",
+
+      features: [
+        "AI-powered conversations",
+        "Knowledge base integration",
+        "Lead capture automation",
+        "Multi-channel support architecture",
+      ],
+
+      architecture:
+        "Next.js frontend with a Node.js API layer. Business documents are embedded into a vector store; incoming questions are answered through a RAG pipeline over the business's own knowledge base, with conversation state and lead data persisted in PostgreSQL.",
+
+      outcome:
+        "In active development — core conversation engine and knowledge-base ingestion working; lead capture and multi-channel delivery in progress.",
+    },
+
+    meta: {
+      featured: true,
+      tags: ["ai", "saas", "rag", "automation", "in-progress"],
     },
   },
 
   {
     id: "shaadimartbd-001",
     slug: "shaadimartbd",
-    title: "ShaadiMartBD",
-    tagline: "Matrimony Platform",
+    title: "ShaadiMart",
+    tagline: "Modern Matrimony Platform",
     description:
-      "A full-featured matrimony platform with real-time chat, secure authentication, role-based access, and scalable profile & search system.",
+      "A full-featured matchmaking platform with secure authentication, real-time messaging, profile management, and an optimized user experience built for long-term scalability.",
 
     type: "fullstack",
     status: "live",
@@ -122,11 +182,11 @@ const projects: Project[] = [
     },
 
     techStack: {
-      primary: ["React", "Node.js", "Express", "MongoDB", "Socket.io"],
-      frontend: ["React", "Tailwind CSS", "TypeScript"],
-      backend: ["Node.js", "Express"],
-      database: ["MongoDB"],
-      realtime: ["Socket.io"],
+      primary: ["Next.js", "TypeScript", "Laravel", "Tailwind CSS", "WebSocket"],
+      frontend: ["Next.js", "TypeScript", "Tailwind CSS"],
+      backend: ["Laravel", "Laravel Sanctum"],
+      database: ["MySQL"],
+      realtime: ["WebSocket"],
       devops: ["Nginx", "Hostinger VPS", "GitHub Actions"],
     },
 
@@ -148,10 +208,10 @@ const projects: Project[] = [
         "Designed enforced multi-step profile completion with progress tracking; implemented subscription-based access control for contact visibility; built a WebSocket-based real-time chat; and created an admin dashboard for moderation and subscription management.",
 
       features: [
-        "Multi-step profile completion with progress",
-        "Subscription & access control (tiered plans)",
-        "Real-time chat (WebSocket)",
-        "Advanced search & filtering",
+        "Next.js application with TypeScript",
+        "Secure authentication using Laravel Sanctum",
+        "Real-time messaging",
+        "Mobile-first responsive interface",
         "Admin dashboard for moderation and plans",
       ],
 
@@ -193,10 +253,10 @@ const projects: Project[] = [
   {
     id: "rchms-001",
     slug: "rchms",
-    title: "RCHMS",
-    tagline: "Housing & Payroll Automation System",
+    title: "Runner City Housing Management",
+    tagline: "Property Management Platform",
     description:
-      "A production-grade housing automation platform with secure registration, role-based access, and payroll automation backed by MySQL transactional integrity.",
+      "A modern housing management platform built to simplify property operations, tenant management, and administrative workflows through a scalable and intuitive web application.",
 
     type: "fullstack",
     status: "live",
@@ -215,10 +275,10 @@ const projects: Project[] = [
     },
 
     techStack: {
-      primary: ["React", "Node.js", "MySQL"],
-      frontend: ["React", "Vite", "Tailwind CSS"],
+      primary: ["React", "Redux Toolkit", "Node.js", "Express", "MongoDB"],
+      frontend: ["React", "Redux Toolkit", "Tailwind CSS"],
       backend: ["Node.js", "Express"],
-      database: ["MySQL"],
+      database: ["MongoDB"],
       devops: ["Production Deployment", "Git Version Control"],
     },
 
@@ -240,11 +300,11 @@ const projects: Project[] = [
         "Built an end-to-end housing automation platform with secure registration, role-based access control, and automated payroll processing. Leveraged MySQL for transactional safety and data consistency, with a modular Express backend and a fast React (Vite) frontend.",
 
       features: [
-        "Secure user registration & authentication",
-        "Role-based access control (Admin, Manager, Staff)",
+        "Role-based dashboard for administrators and residents",
+        "Secure authentication and data management",
+        "Scalable frontend architecture with React & Redux Toolkit",
+        "Optimized API integration for fast user experience",
         "Automated payroll calculation & records",
-        "Resident & staff management",
-        "Dashboard-driven housing operations",
         "Data validation and audit-friendly workflows",
       ],
 

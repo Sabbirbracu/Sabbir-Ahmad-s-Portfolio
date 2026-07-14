@@ -1,59 +1,53 @@
 import { motion } from "framer-motion";
-import { Clock, Globe, Layers, Rocket } from "lucide-react";
+import { Rocket, Clock, DollarSign, Globe, Sparkles } from "lucide-react";
 
 const metrics = [
-  {
-    icon: Rocket,
-    value: "17+",
-    label: "Production-Grade Projects",
-  },
-  {
-    icon: Globe,
-    value: "International",
-    label: "Client Experience",
-  },
-  {
-    icon: Clock,
-    value: "2+",
-    label: "Years Engineering Practice",
-  },
-  {
-    icon: Layers,
-    value: "End-to-End",
-    label: "Design → Deployment",
-  },
+  { icon: Rocket, value: "17+", label: "Production Applications" },
+  { icon: Clock, value: "2+", label: "Years Building Software" },
+  { icon: DollarSign, value: "$1K+", label: "Upwork Revenue" },
+  { icon: Globe, value: "International", label: "Client Experience" },
+  { icon: Sparkles, value: "AI & ML", label: "Research Focus" },
 ];
 
 const CredibilitySection = () => {
   return (
-    <section className="py-12 sm:py-16 lg:py-20 relative">
-      <div className="section-container px-4 sm:px-6">
+    <section className="py-20 md:py-28">
+      <div className="section-container">
+        {/* Section header */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6"
+          className="rule pt-8 mb-14 md:mb-20"
         >
-          {metrics.map((metric, index) => (
-            <motion.div
-              key={metric.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              className="glass-card-hover p-4 sm:p-5 lg:p-6 text-center group"
-            >
-              <div className="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-lg sm:rounded-xl bg-primary/10 mb-3 sm:mb-4 group-hover:bg-primary/20 transition-colors">
-                <metric.icon className="w-5 h-5 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-primary" />
-              </div>
-              <div className="text-xl sm:text-2xl lg:text-4xl font-bold font-heading text-foreground mb-1 sm:mb-2">
+          <p className="eyebrow mb-6">
+            <span className="eyebrow-index">01</span> — Trusted By
+          </p>
+          <h2 className="font-heading text-3xl md:text-4xl font-semibold tracking-tight text-foreground max-w-2xl">
+            Engineering experience across{" "}
+            <span className="text-primary">startups, businesses, and AI products</span>.
+          </h2>
+        </motion.div>
+
+        {/* Metric grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border border border-border"
+        >
+          {metrics.map((metric) => (
+            <div key={metric.label} className="bg-card/50 backdrop-blur-sm p-6 md:p-7">
+              <metric.icon className="w-5 h-5 text-primary mb-4" />
+              <p className="font-heading text-xl md:text-2xl font-semibold text-foreground leading-tight">
                 {metric.value}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground leading-tight">
+              </p>
+              <p className="mt-2 font-mono text-[11px] tracking-[0.1em] uppercase text-muted-foreground leading-snug">
                 {metric.label}
-              </div>
-            </motion.div>
+              </p>
+            </div>
           ))}
         </motion.div>
       </div>

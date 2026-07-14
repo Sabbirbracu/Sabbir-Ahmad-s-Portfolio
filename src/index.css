@@ -14,58 +14,59 @@
 
 @layer base {
   :root {
-    --background: 40 36% 97%;
-    --foreground: 22 24% 12%;
+    --background: 75 22% 97%;
+    --foreground: 165 28% 11%;
 
-    --card: 42 40% 99%;
-    --card-foreground: 22 24% 12%;
+    --card: 75 26% 99%;
+    --card-foreground: 165 28% 11%;
 
-    --popover: 42 40% 99%;
-    --popover-foreground: 22 24% 12%;
+    --popover: 75 26% 99%;
+    --popover-foreground: 165 28% 11%;
 
-    --primary: 15 88% 47%;
-    --primary-foreground: 40 36% 97%;
+    --primary: 160 62% 26%;
+    --primary-foreground: 75 22% 97%;
 
-    --secondary: 38 28% 92%;
-    --secondary-foreground: 22 24% 12%;
+    --secondary: 78 16% 92%;
+    --secondary-foreground: 165 28% 11%;
 
-    --muted: 38 24% 91%;
-    --muted-foreground: 26 12% 38%;
+    --muted: 78 14% 91%;
+    --muted-foreground: 165 10% 38%;
 
-    --accent: 32 92% 50%;
-    --accent-foreground: 22 24% 12%;
+    --accent: 42 88% 50%;
+    --accent-foreground: 165 28% 11%;
 
     --destructive: 0 72% 45%;
-    --destructive-foreground: 40 36% 97%;
+    --destructive-foreground: 75 22% 97%;
 
-    --border: 34 18% 84%;
-    --input: 34 18% 84%;
-    --ring: 15 88% 47%;
+    --border: 90 12% 84%;
+    --input: 90 12% 84%;
+    --ring: 160 62% 26%;
 
     --radius: 0rem;
 
-    /* Brand tokens */
-    --ink: 22 24% 12%;
-    --paper: 40 36% 97%;
-    --vermilion: 15 88% 47%;
-    --amber: 32 92% 50%;
-    --navy: 24 26% 11%;
-    --navy-soft: 24 18% 17%;
-    --sand: 36 34% 92%;
-    --gold: 36 88% 54%;
+    /* Brand tokens — emerald & gold on ivory
+       (token names kept for compatibility; values re-themed) */
+    --ink: 165 28% 11%;
+    --paper: 75 22% 97%;
+    --vermilion: 160 62% 26%;
+    --amber: 42 88% 50%;
+    --navy: 162 30% 10%;
+    --navy-soft: 160 20% 16%;
+    --sand: 80 18% 93%;
+    --gold: 42 88% 52%;
 
     --gradient-dark: none;
     --gradient-card: none;
     --gradient-glow: none;
     --gradient-text: linear-gradient(
       135deg,
-      hsl(14 85% 45%) 0%,
-      hsl(24 90% 50%) 100%
+      hsl(160 62% 28%) 0%,
+      hsl(95 55% 38%) 100%
     );
 
     --shadow-glow: none;
-    --shadow-card: 0 1px 2px hsl(24 12% 9% / 0.04);
-    --shadow-hover: 0 8px 24px hsl(24 12% 9% / 0.08);
+    --shadow-card: 0 1px 2px hsl(165 28% 11% / 0.04);
+    --shadow-hover: 0 8px 24px hsl(165 28% 11% / 0.08);
 
     --font-heading: "Sora", "Inter", sans-serif;
     --font-body: "Inter", sans-serif;
@@ -106,8 +107,8 @@
   h5,
   h6 {
     font-family: var(--font-heading);
-    font-weight: 600;
-    letter-spacing: -0.03em;
+    font-weight: 700;
+    letter-spacing: -0.035em;
   }
 
   code,
@@ -131,13 +132,13 @@
      component inside inherits the inverted palette automatically. */
   .section-dark {
     --background: var(--navy);
-    --foreground: 40 40% 95%;
+    --foreground: 78 30% 95%;
     --card: var(--navy-soft);
-    --card-foreground: 40 40% 95%;
-    --muted-foreground: 34 14% 66%;
-    --border: 26 14% 25%;
+    --card-foreground: 78 30% 95%;
+    --muted-foreground: 150 10% 66%;
+    --border: 160 14% 24%;
     --secondary: var(--navy-soft);
-    --secondary-foreground: 40 40% 95%;
+    --secondary-foreground: 78 30% 95%;
     background-color: hsl(var(--navy));
     color: hsl(var(--foreground));
   }
@@ -145,8 +146,8 @@
   /* Warm sand band for mid-page rhythm */
   .section-sand {
     --background: var(--sand);
-    --card: 45 30% 97%;
-    --border: 40 14% 80%;
+    --card: 78 22% 97%;
+    --border: 90 12% 80%;
     background-color: hsl(var(--sand));
   }
 
@@ -246,5 +247,31 @@
     100% {
       opacity: 0;
     }
+  }
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 15s linear infinite;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 }

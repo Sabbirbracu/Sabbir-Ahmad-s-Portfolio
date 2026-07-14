@@ -21,49 +21,79 @@ const CTASection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="rule pt-8"
+            className="rule pt-10 text-center"
           >
-            <p className="eyebrow mb-10">
-              <span className="eyebrow-index">05</span> — Contact
+            <p className="eyebrow mb-12 flex items-center justify-center gap-3">
+              <span className="h-px w-8 bg-primary/60" />
+              <span>
+                <span className="eyebrow-index">10</span> — Contact
+              </span>
+              <span className="h-px w-8 bg-primary/60" />
             </p>
 
-            <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight text-foreground leading-[1.05]">
-              Let's build something
-              <br />
-              that <span className="text-primary">lasts</span>.
+            <h2 className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-foreground leading-[1.05]">
+              Software outlives <span className="text-primary">code</span>.
             </h2>
 
-            <p className="mt-8 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Open to remote roles, onsite opportunities with global teams, and
-              selective contract work. If you need an engineer who owns the
-              outcome — not just the code — let's talk.
+            {/* Stanza — triptych */}
+            <div className="mt-14 md:mt-16 max-w-3xl mx-auto grid sm:grid-cols-3 border-y border-border divide-y sm:divide-y-0 sm:divide-x divide-border">
+              {[
+                "The technologies will evolve.",
+                "Requirements will change.",
+                "Teams will grow.",
+              ].map((line, i) => (
+                <div key={line} className="px-6 py-5">
+                  <p className="font-mono text-[10px] tracking-[0.2em] text-primary/70 mb-2">
+                    {String(i + 1).padStart(2, "0")}
+                  </p>
+                  <p className="font-mono text-xs md:text-[13px] tracking-[0.04em] text-muted-foreground">
+                    {line}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Thesis */}
+            <p className="mt-14 md:mt-16 mx-auto max-w-3xl font-heading text-xl md:text-3xl font-semibold tracking-tight text-foreground leading-snug">
+              What remains is the quality of the{" "}
+              <span className="text-primary">engineering decisions</span> made
+              from the beginning.
             </p>
 
-            <div className="mt-12 flex flex-wrap items-center gap-6">
+            <p className="mt-6 mx-auto max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
+              If you're building software that's meant to last, let's start
+              with the right foundation.
+            </p>
+
+            {/* Actions */}
+            <div className="mt-12 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6">
               <Button
                 size="lg"
-                className="rounded-none bg-foreground text-background hover:bg-primary hover:text-primary-foreground h-12 px-7 font-mono text-xs tracking-[0.15em] uppercase transition-colors"
+                className="rounded-full bg-primary text-primary-foreground hover:bg-foreground hover:text-background h-12 md:h-14 px-9 font-mono text-xs tracking-[0.15em] uppercase transition-colors"
                 onClick={() => setContactOpen(true)}
               >
-                Contact Me
+                Discuss Your Product
                 <ArrowUpRight className="ml-2 w-4 h-4" />
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="rounded-none border-foreground text-foreground hover:bg-foreground hover:text-background h-12 px-7 font-mono text-xs tracking-[0.15em] uppercase transition-colors"
+                className="rounded-full border-foreground/40 bg-transparent text-foreground hover:bg-foreground hover:text-background h-12 md:h-14 px-9 font-mono text-xs tracking-[0.15em] uppercase transition-colors"
                 onClick={() => setIsCalendlyOpen(true)}
               >
                 <Calendar className="mr-2 w-4 h-4" />
-                Book a Call
+                Book an Engineering Call
               </Button>
-              <a
-                href="mailto:sabbirahmad653@gmail.com"
-                className="font-mono text-xs tracking-[0.1em] text-foreground editorial-link"
-              >
-                sabbirahmad653@gmail.com
-              </a>
             </div>
+
+            {/* Availability note */}
+            <p className="mt-8 flex items-center justify-center gap-2.5 font-mono text-[11px] tracking-[0.15em] uppercase text-muted-foreground">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-60" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500" />
+              </span>
+              Currently accepting new projects
+            </p>
           </motion.div>
         </div>
       </section>
@@ -77,11 +107,11 @@ const CTASection = () => {
         rootElement={document.getElementById("root") as HTMLElement}
         prefill={{ name: "", email: "" }}
         pageSettings={{
-          backgroundColor: "faf8f3",
+          backgroundColor: "f7f8f2",
           hideEventTypeDetails: false,
           hideLandingPageDetails: false,
-          primaryColor: "d6431a",
-          textColor: "1a1613",
+          primaryColor: "196b50",
+          textColor: "12241d",
         }}
       />
     </>

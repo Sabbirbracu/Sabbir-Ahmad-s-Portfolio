@@ -1,209 +1,183 @@
 import { Button } from "@/components/ui/button";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-const stats = [
-  { value: "17+", label: "Projects shipped in production" },
-  { value: "3", label: "Live products serving real users" },
-  { value: "2+", label: "Years building for clients & startups" },
-  { value: "40%", label: "Conversion lift delivered for a client" },
-];
-
+/* Alternating capabilities (what I build) and technologies (what I build with) */
 const stack = [
-  "React",
-  "Next.js",
-  "TypeScript",
-  "Node.js",
-  "Express",
-  "FastAPI",
-  "PostgreSQL",
-  "MongoDB",
-  "Redis",
-  "Socket.io",
-  "Nginx",
-  "GitHub Actions",
-  "Tailwind CSS",
-  "Computer Vision",
+  { label: "SaaS Development", capability: true },
+  { label: "React" },
+  { label: "AI Solutions", capability: true },
+  { label: "Next.js" },
+  { label: "Custom Web Apps", capability: true },
+  { label: "Node.js" },
+  { label: "System Architecture", capability: true },
+  { label: "TypeScript" },
+  { label: "API Development", capability: true },
+  { label: "Python" },
+  { label: "Shopify Development", capability: true },
+  { label: "PostgreSQL" },
+  { label: "Cloud Deployment", capability: true },
+  { label: "Laravel" },
 ];
 
 const HeroSection = () => {
   return (
-    <section className="relative bg-hero-wash overflow-hidden">
-      <div className="section-container pt-32 md:pt-40">
-        {/* Main split */}
-        <div className="grid grid-cols-12 gap-y-14 lg:gap-x-16 pb-16 md:pb-24 items-center">
-          {/* Content */}
-          <div className="col-span-12 lg:col-span-7">
-            <p className="eyebrow mb-8">
-              <span className="eyebrow-index">00</span> — Introduction
-            </p>
-
-            <h1 className="font-heading text-[2.6rem] leading-[1.08] sm:text-5xl lg:text-[3.7rem] lg:leading-[1.06] font-semibold tracking-tight text-foreground max-w-xl">
-              I build production systems that hold up under{" "}
-              <span className="relative inline-block text-primary">
-                real users
-                <span className="absolute left-0 -bottom-1 w-full h-[3px] bg-amber" />
-              </span>
-              .
-            </h1>
-
-            <p className="mt-8 text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
-              I take products from system design to deployment — and keep them
-              running. I've shipped 17+ production apps for startups and
-              international clients, and I'm now building{" "}
-              <a
-                href="https://bhashal.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground font-medium editorial-link"
-              >
-                Bhashal
-              </a>
-              .
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
-              <Button
-                size="lg"
-                className="rounded-none bg-primary text-primary-foreground hover:bg-foreground h-12 px-7 font-mono text-xs tracking-[0.15em] uppercase transition-colors"
-                onClick={() =>
-                  document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                Selected Work
-                <ArrowDown className="ml-2 w-4 h-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="rounded-none border-foreground/30 bg-transparent text-foreground hover:bg-foreground hover:text-background h-12 px-7 font-mono text-xs tracking-[0.15em] uppercase transition-colors"
-                onClick={() =>
-                  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                Contact Me
-              </Button>
-              <div className="flex items-center gap-5">
-                <a
-                  href="https://github.com/Sabbirbracu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-primary transition-colors"
-                >
-                  GitHub <ArrowUpRight className="w-3.5 h-3.5" />
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/sabbirahmad653/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-primary transition-colors"
-                >
-                  LinkedIn <ArrowUpRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Portrait — editorial duotone card */}
-          <div className="col-span-12 lg:col-span-5">
-            <div className="relative w-full max-w-[20rem] mx-auto lg:mr-0 lg:ml-auto">
-              {/* Thin accent header */}
-              <div className="flex items-center justify-between border border-border border-b-0 bg-navy px-4 py-2.5">
-                <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-[hsl(40_40%_88%)]">
-                  Sabbir Ahmad
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-70" />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-400" />
-                  </span>
-                  <span className="font-mono text-[9px] tracking-[0.18em] uppercase text-[hsl(40_30%_70%)]">
-                    Available
-                  </span>
-                </span>
-              </div>
-
-              {/* Duotone portrait */}
-              <div className="group relative overflow-hidden border border-border bg-navy">
-                <img
-                  src="/img.png"
-                  alt="Sabbir Ahmad — Full-Stack Engineer"
-                  className="w-full aspect-[4/5] object-cover object-top grayscale contrast-[1.05] transition-all duration-700 group-hover:grayscale-0"
-                />
-                {/* Warm duotone wash */}
-                <div className="absolute inset-0 mix-blend-multiply bg-gradient-to-br from-primary/25 via-transparent to-navy/50 pointer-events-none transition-opacity duration-700 group-hover:opacity-0" />
-                {/* Bottom fade for caption legibility */}
-                <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-navy/90 to-transparent pointer-events-none" />
-
-                {/* Amber corner ticks */}
-                <span className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-amber" />
-                <span className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-amber" />
-
-                {/* Overlaid caption */}
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <p className="font-heading font-semibold text-[hsl(40_40%_96%)] leading-tight">
-                    Full-Stack Engineer
-                  </p>
-                  <p className="font-mono text-[11px] text-[hsl(40_30%_75%)] mt-1">
-                    Dhaka, Bangladesh · BRAC University
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+    <section className="relative min-h-screen flex flex-col overflow-hidden">
+      {/* Animated background gradients */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Main gradient orbs */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-radial from-[hsl(160_62%_26%/0.12)] to-transparent rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-radial from-[hsl(42_88%_50%/0.08)] to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-radial from-[hsl(160_62%_26%/0.05)] to-transparent rounded-full blur-2xl" />
+        
+        {/* Animated geometric shapes */}
+        <div className="absolute top-20 left-10 w-32 h-32 border-2 border-[hsl(160_62%_26%/0.15)] rotate-45 animate-spin-slow" />
+        <div className="absolute bottom-32 right-16 w-24 h-24 border-2 border-[hsl(42_88%_50%/0.2)] animate-spin-slow" style={{ animationDirection: 'reverse', animationDuration: '20s' }} />
+        
+        {/* Floating dots */}
+        <div className="absolute top-40 right-1/4 w-3 h-3 bg-[hsl(160_62%_26%/0.3)] rounded-full animate-float" />
+        <div className="absolute bottom-40 left-1/4 w-2 h-2 bg-[hsl(42_88%_50%/0.4)] rounded-full animate-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/3 right-1/3 w-2.5 h-2.5 bg-[hsl(160_62%_26%/0.25)] rounded-full animate-float" style={{ animationDelay: '2s' }} />
+        
+        {/* Grid pattern overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, hsl(160 62% 26%) 1px, transparent 1px),
+              linear-gradient(to bottom, hsl(160 62% 26%) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px'
+          }}
+        />
+        
+        {/* Diagonal lines */}
+        <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-[hsl(160_62%_26%/0.08)] to-transparent" />
+        <div className="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-[hsl(42_88%_50%/0.06)] to-transparent" />
+        
+        {/* Corner accents */}
+        <div className="absolute top-0 left-0 w-40 h-40 border-l-2 border-t-2 border-[hsl(160_62%_26%/0.15)]" />
+        <div className="absolute bottom-0 right-0 w-40 h-40 border-r-2 border-b-2 border-[hsl(42_88%_50%/0.2)]" />
+        
+        {/* Floating code-like elements */}
+        <div className="absolute top-1/4 left-12 opacity-10">
+          <div className="font-mono text-xs text-[hsl(160_62%_26%)]">{'{ }'}</div>
         </div>
-
-        {/* Stat rail */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 border border-border bg-card/50 backdrop-blur-sm">
-          {stats.map((stat, i) => (
-            <div
-              key={stat.label}
-              className={`p-6 md:p-7 ${
-                i % 2 === 1 ? "border-l border-border" : ""
-              } ${i >= 2 ? "max-lg:border-t max-lg:border-border" : ""} ${
-                i === 2 ? "lg:border-l lg:border-border" : ""
-              } ${i === 3 ? "lg:border-l lg:border-border" : ""}`}
-            >
-              <p className="font-heading text-3xl md:text-4xl font-semibold text-foreground">
-                {stat.value}
-              </p>
-              <p className="mt-2 text-xs md:text-sm text-muted-foreground leading-snug">
-                {stat.label}
-              </p>
-            </div>
-          ))}
+        <div className="absolute bottom-1/3 right-20 opacity-10">
+          <div className="font-mono text-xs text-[hsl(42_88%_50%)]">{'</>'}</div>
+        </div>
+        <div className="absolute top-2/3 left-1/3 opacity-10">
+          <div className="font-mono text-xs text-[hsl(160_62%_26%)]">{'( )'}</div>
         </div>
       </div>
 
-      {/* Tech stack ticker */}
-      <div className="mt-14 md:mt-20 border-y border-border bg-card/40 flex items-stretch">
+      <div className="section-container flex-1 flex flex-col justify-center py-12 md:py-16 lg:py-20 relative">
+        {/* Centered content */}
+        <div className="max-w-5xl mx-auto text-center px-4">
+          <p className="eyebrow mb-4 md:mb-6 justify-center mt-5">
+            <span className="eyebrow-index">01</span> — Software Engineer &amp; Product Builder
+          </p>
+
+          <h1 className="font-heading text-[2.75rem] leading-[1.1] sm:text-[3.5rem] md:text-[4.25rem] lg:text-[5rem] xl:text-[5.5rem] sm:leading-[1.05] lg:leading-[1.02] font-extrabold tracking-[-0.04em] text-foreground mb-6 md:mb-8">
+            Building software
+            <br />
+            that solves
+            <br />
+            <span className="bg-gradient-to-br from-[hsl(160_62%_22%)] via-[hsl(160_62%_24%)] to-[hsl(95_55%_32%)] bg-clip-text text-transparent">
+              real problems
+            </span>
+          </h1>
+
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-3 md:mb-4">
+            I'm Sabbir Ahmad, a Software Engineer specializing in SaaS
+            development, web applications, and AI-powered solutions.
+          </p>
+
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-6 md:mb-8">
+            I help startups and growing businesses transform ideas into
+            reliable production-ready systems — from system architecture
+            and development to deployment.
+          </p>
+
+          <div className="inline-flex items-center gap-2 md:gap-3 mb-8 md:mb-10 px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-[hsl(42_88%_50%/0.1)] to-[hsl(160_62%_26%/0.1)] border-l-4 border-[hsl(42_88%_50%)]">
+            <span className="font-mono text-xs md:text-sm lg:text-base tracking-[0.12em] uppercase text-foreground font-bold text-left md:text-center">
+              17+ production applications shipped for startups and international clients.
+            </span>
+          </div>
+
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 md:gap-5 mb-6 md:mb-8">
+            <Button
+              size="lg"
+              className="w-full sm:w-auto rounded-none bg-primary text-primary-foreground hover:bg-foreground hover:scale-105 h-12 md:h-14 px-6 md:px-10 font-mono text-xs md:text-sm tracking-[0.15em] uppercase font-bold transition-all duration-300 shadow-lg hover:shadow-2xl"
+              onClick={() =>
+                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              Start a Project
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full sm:w-auto rounded-none border-2 md:border-[3px] border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background hover:scale-105 h-12 md:h-14 px-6 md:px-10 font-mono text-xs md:text-sm tracking-[0.15em] uppercase font-bold transition-all duration-300"
+              onClick={() =>
+                document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              View Case Studies
+            </Button>
+          </div>
+
+          <div className="flex items-center justify-center gap-4 md:gap-8">
+            <a
+              href="https://github.com/Sabbirbracu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 md:gap-2 font-mono text-xs md:text-sm tracking-[0.18em] uppercase text-muted-foreground hover:text-primary transition-colors group"
+            >
+              GitHub <ArrowUpRight className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </a>
+            <span className="text-muted-foreground/40 text-base md:text-xl">•</span>
+            <a
+              href="https://www.linkedin.com/in/sabbirahmad653/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 md:gap-2 font-mono text-xs md:text-sm tracking-[0.18em] uppercase text-muted-foreground hover:text-primary transition-colors group"
+            >
+              LinkedIn <ArrowUpRight className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Capabilities & technologies ticker - at bottom */}
+      <div className="border-t-[3px] border-b-[3px] border-foreground bg-navy flex items-stretch relative z-10 mt-auto">
         {/* Fixed label */}
-        <div className="relative z-20 shrink-0 flex items-center gap-2.5 bg-navy px-5 md:px-7 border-r border-border">
-          <span className="text-amber text-sm leading-none">◆</span>
-          <span className="font-mono text-[10px] md:text-[11px] tracking-[0.22em] uppercase text-[hsl(40_40%_90%)]">
-            Stack
+        <div className="relative z-20 shrink-0 flex items-center gap-3 bg-[hsl(160_62%_26%)] px-6 md:px-8 border-r-[3px] border-[hsl(42_88%_50%)]">
+          <span className="text-[hsl(42_88%_50%)] text-lg leading-none font-bold">★</span>
+          <span className="font-mono text-xs tracking-[0.22em] uppercase text-white font-bold">
+            Capabilities
           </span>
         </div>
 
         {/* Marquee */}
         <div className="relative flex-1 overflow-hidden" aria-hidden="true">
-          {/* Edge fades */}
-          <div className="absolute left-0 top-0 bottom-0 w-10 md:w-16 z-10 bg-gradient-to-r from-background to-transparent pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-10 md:w-16 z-10 bg-gradient-to-l from-background to-transparent pointer-events-none" />
-
           <div className="flex w-max animate-marquee">
             {[0, 1].map((copy) => (
               <div key={copy} className="flex shrink-0">
-                {stack.map((tech, i) => (
+                {stack.map((item) => (
                   <span
-                    key={`${copy}-${tech}`}
-                    className="group flex items-center gap-2.5 px-5 md:px-6 py-3.5 border-r border-border/70 font-mono text-[11px] tracking-[0.14em] uppercase text-muted-foreground"
+                    key={`${copy}-${item.label}`}
+                    className={`flex items-center gap-3 px-6 md:px-7 py-4 border-r border-white/20 font-mono text-xs tracking-[0.16em] uppercase transition-colors ${
+                      item.capability
+                        ? "text-white font-bold"
+                        : "text-white/60 font-medium"
+                    }`}
                   >
                     <span
-                      className={`h-1 w-1 rounded-full ${
-                        i % 2 === 0 ? "bg-primary" : "bg-amber"
+                      className={`h-2 w-2 rounded-full ${
+                        item.capability ? "bg-[hsl(42_88%_50%)]" : "bg-white/40"
                       }`}
                     />
-                    {tech}
+                    {item.label}
                   </span>
                 ))}
               </div>

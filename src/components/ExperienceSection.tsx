@@ -6,36 +6,39 @@ const experiences = [
     icon: Briefcase,
     accent: "primary" as const,
     current: true,
-    role: "Full Stack Developer",
+    role: "Software Engineer",
     type: "Contract",
-    company: "Qullia — Software Agency",
+    company: "Startups & International Clients",
     location: "Remote",
-    period: "Jan 2024 — Present",
+    period: "2024 — Present",
     summary:
-      "Delivered 17+ production-grade web applications for startups and international clients — from system planning and backend architecture to deployment and post-release support.",
+      "Designed, developed, and deployed 17+ production applications across SaaS, ecommerce, internal business systems, and AI-powered solutions.",
     impact: [
-      "Built scalable frontend & backend systems with React, Node.js, Laravel, and MongoDB",
-      "Designed REST APIs, optimized databases, and improved performance by 35%",
-      "Automated CI/CD pipelines, reducing release cycles by 45%",
+      "Delivered scalable applications for startups and international clients",
+      "Built frontend and backend systems using modern JavaScript frameworks",
+      "Designed REST APIs and optimized application performance",
+      "Integrated third-party services and AI capabilities",
+      "Supported deployments, maintenance, and production improvements",
     ],
-    stack: ["React", "Node.js", "Express", "MongoDB", "Laravel", "CI/CD"],
+    stack: ["React", "Next.js", "Node.js", "Laravel", "MongoDB", "CI/CD"],
   },
   {
     icon: Cpu,
     accent: "amber" as const,
     current: true,
-    role: "Research & Exploration",
-    type: "AI & Computer Vision",
+    role: "AI & Computer Vision Research",
+    type: "Research",
     company: "BRAC University",
     location: "Dhaka",
     period: "2025 — Present",
     summary:
-      "Exploring machine learning applications with a focus on computer vision — building CNN-based solutions for real-world image processing challenges.",
+      "Exploring machine learning, deep learning, and computer vision with a focus on practical AI systems that solve real-world problems.",
     impact: [
-      "Researching deep learning models for image classification and object detection",
-      "Building CNN-based solutions for real-world processing challenges",
+      "Image classification & object detection",
+      "Segmentation and CNN architectures",
+      "AI-powered web applications",
     ],
-    stack: ["PyTorch", "TensorFlow", "OpenCV", "NumPy", "Pandas"],
+    stack: ["Python", "PyTorch", "TensorFlow", "OpenCV", "NumPy", "Pandas"],
   },
 ];
 
@@ -52,16 +55,16 @@ const ExperienceSection = () => {
           className="rule pt-8 mb-14 md:mb-20"
         >
           <p className="eyebrow mb-6">
-            <span className="eyebrow-index">03</span> — Experience
+            <span className="eyebrow-index">06</span> — Experience
           </p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <h2 className="font-heading text-4xl md:text-6xl font-semibold tracking-tight text-foreground max-w-2xl">
-              Shipping for clients since{" "}
+            <h2 className="font-heading text-5xl md:text-6xl font-bold tracking-tight text-foreground max-w-2xl">
+              Building software since{" "}
               <span className="text-primary">2024</span>.
             </h2>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
-              Two years of production work, plus active research into AI &amp;
-              computer vision.
+              Working with startups and businesses to transform ideas into
+              production-ready digital products.
             </p>
           </div>
         </motion.div>

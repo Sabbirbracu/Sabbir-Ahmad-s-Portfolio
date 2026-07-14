@@ -14,11 +14,12 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const navLinks = [
-  { index: "01", label: "Work", href: "/#work", isRoute: false },
-  { index: "02", label: "Testimonials", href: "/#testimonials", isRoute: false },
-  { index: "03", label: "Experience", href: "/#experience", isRoute: false },
-  { index: "04", label: "About", href: "/#about", isRoute: false },
-  { index: "05", label: "Contact", href: "/#contact", isRoute: false },
+  { index: "02", label: "Work", href: "/#work", isRoute: false },
+  { index: "03", label: "Services", href: "/#services", isRoute: false },
+  { index: "04", label: "Clients", href: "/#testimonials", isRoute: false },
+  { index: "05", label: "Process", href: "/#process", isRoute: false },
+  { index: "08", label: "About", href: "/#about", isRoute: false },
+  { index: "10", label: "Contact", href: "/#contact", isRoute: false },
 ];
 
 const Navbar = () => {

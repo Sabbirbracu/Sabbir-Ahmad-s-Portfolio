@@ -14,8 +14,8 @@ const Footer = () => {
               Sabbir Ahmad<span className="text-primary">.</span>
             </p>
             <p className="mt-3 text-sm text-muted-foreground max-w-xs leading-relaxed">
-              Full-stack engineer building production systems that hold up
-              under real users.
+              Building SaaS platforms, custom business systems, and AI-powered
+              products for startups and growing businesses.
             </p>
           </div>
 

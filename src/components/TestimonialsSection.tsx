@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Play } from "lucide-react";
+import { Play, Quote } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface TextTestimonial {
@@ -60,62 +60,110 @@ const TestimonialsSection = () => {
   const youtubeVideoId = "2Fs0-o5jeEU";
 
   return (
-    <section id="testimonials" className="section-dark relative overflow-hidden">
-      <div className="absolute inset-0 bg-dark-glow pointer-events-none" />
+    <section id="testimonials" className="relative overflow-hidden py-20 md:py-28 bg-[hsl(165_28%_11%)]">
+      {/* Premium dark background graphics */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Gradient orbs */}
+        <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-radial from-[hsl(160_62%_26%/0.15)] to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-radial from-[hsl(42_88%_50%/0.08)] to-transparent rounded-full blur-3xl" />
+        
+        {/* Minimal grid */}
+        <div 
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, hsl(160 62% 40%) 1px, transparent 1px),
+              linear-gradient(to bottom, hsl(160 62% 40%) 1px, transparent 1px)
+            `,
+            backgroundSize: '80px 80px'
+          }}
+        />
+        
+        {/* Side decorations */}
+        <div className="absolute top-1/4 left-10 w-20 h-20 border border-white/5 rotate-12" />
+        <div className="absolute bottom-1/3 right-12 w-16 h-16 border border-[hsl(42_88%_50%/0.15)]" />
+      </div>
 
-      <div className="section-container relative py-20 md:py-28">
+      <div className="section-container relative z-10">
         {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="rule pt-8 mb-14 md:mb-20"
+          className="mb-14 md:mb-20"
         >
-          <p className="eyebrow mb-6">
-            <span className="eyebrow-index">02</span> — Client Voices
-          </p>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <h2 className="font-heading text-4xl md:text-6xl font-semibold tracking-tight text-foreground max-w-2xl">
-              What clients say when the work is{" "}
-              <span className="text-primary">done</span>.
-            </h2>
-            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
-              From startup founders to marketing teams — people I've shipped
-              real products for.
+          <div className="border-t border-white/10 pt-8">
+            <p className="eyebrow mb-6">
+              <span className="text-[hsl(160_62%_40%)]">04</span> <span className="text-white/60">— Client Voices</span>
             </p>
+            <div className="flex flex-col gap-6">
+              <h2 className="font-heading text-[2.75rem] leading-[1.1] sm:text-[3.5rem] md:text-[4.25rem] lg:text-[5rem] sm:leading-[1.05] lg:leading-[1.02] font-extrabold tracking-[-0.04em] text-white">
+                Trusted by <span className="font-black uppercase bg-gradient-to-br from-[hsl(160_62%_22%)] via-[hsl(160_62%_24%)] to-[hsl(95_55%_32%)] bg-clip-text text-transparent">FOUNDERS</span>
+                <br />
+                and businesses
+              </h2>
+              <p className="text-base md:text-lg lg:text-xl text-white/70 leading-relaxed max-w-3xl">
+                Helping clients ship reliable software matters more than simply
+                delivering code.
+              </p>
+            </div>
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-12 gap-y-10 md:gap-x-8 items-stretch">
-          {/* Video testimonial */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          {/* Elegant video testimonial card */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="col-span-12 md:col-span-6"
+            className="group"
           >
-            <div className="border border-border h-full flex flex-col">
-              <div className="flex items-center gap-2 px-5 py-3 border-b border-border">
-                <Play className="w-3.5 h-3.5 text-primary" />
-                <span className="font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground">
-                  Video Review
-                </span>
+            <div className="relative h-full flex flex-col bg-gradient-to-br from-[hsl(162_30%_12%)] to-[hsl(162_30%_10%)] border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden">
+              {/* Subtle top accent */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[hsl(160_62%_35%)] to-transparent opacity-50" />
+              
+              {/* Video container with elegant padding */}
+              <div className="p-6 md:p-8">
+                <div className="relative aspect-video bg-black/40 overflow-hidden">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1`}
+                    title="Client Testimonial Video"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                  
+                  {/* Subtle corner ornaments */}
+                  <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-white/20" />
+                  <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-white/20" />
+                </div>
               </div>
-              <div className="aspect-video flex-1">
-                <iframe
-                  src={`https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1`}
-                  title="Client Testimonial Video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full"
-                />
+              
+              {/* Refined bottom info */}
+              <div className="px-6 md:px-8 pb-6 md:pb-8">
+                <div className="flex items-center gap-3 pt-6 border-t border-white/10">
+                  <div className="flex items-center justify-center w-10 h-10 bg-white/5 border border-white/10">
+                    <Play className="w-4 h-4 text-[hsl(160_62%_40%)]" fill="currentColor" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-mono text-xs tracking-[0.15em] uppercase text-white/90 font-semibold">
+                      Video Testimonial
+                    </p>
+                    <p className="font-mono text-[10px] text-white/40 mt-0.5">
+                      Client Review
+                    </p>
+                  </div>
+                </div>
               </div>
+
+              {/* Subtle glow on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[hsl(160_62%_30%/0.05)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             </div>
           </motion.div>
 
-          {/* Rotating text testimonials */}
+          {/* Elegant text testimonial card with photo */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -123,17 +171,18 @@ const TestimonialsSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
-            className="col-span-12 md:col-span-6"
+            className="group"
           >
-            <div className="border border-border h-full flex flex-col p-8 md:p-10">
-              <span
-                className="font-heading text-6xl leading-none text-primary select-none"
-                aria-hidden="true"
-              >
-                &ldquo;
-              </span>
+            <div className="relative h-full flex flex-col bg-gradient-to-br from-[hsl(162_30%_12%)] to-[hsl(162_30%_10%)] border border-white/10 hover:border-white/20 p-8 md:p-10 transition-all duration-500">
+              {/* Subtle top accent */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[hsl(160_62%_35%)] to-transparent opacity-50" />
+              
+              {/* Refined quote mark */}
+              <div className="absolute top-8 right-8 opacity-5">
+                <Quote className="w-20 h-20 text-white" strokeWidth={1.5} />
+              </div>
 
-              <div className="flex-1 flex flex-col justify-between mt-2">
+              <div className="relative z-10 flex-1 flex flex-col">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentSlide}
@@ -141,44 +190,69 @@ const TestimonialsSection = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -16 }}
                     transition={{ duration: 0.35, ease: "easeOut" }}
+                    className="flex-1 flex flex-col"
                   >
-                    <blockquote className="text-lg md:text-xl text-foreground leading-relaxed">
+                    {/* Opening quote icon */}
+                    <div className="mb-4">
+                      <Quote className="w-8 h-8 text-[hsl(160_62%_35%)]" strokeWidth={2} />
+                    </div>
+
+                    {/* Quote text */}
+                    <blockquote className="text-lg md:text-xl text-white/95 leading-[1.7] font-normal mb-auto">
                       {textTestimonials[currentSlide].quote}
                     </blockquote>
 
-                    <div className="mt-8 flex items-center gap-4">
-                      <div className="w-12 h-12 border border-primary/50 flex items-center justify-center">
-                        <span className="font-heading font-semibold text-lg text-primary">
-                          {textTestimonials[currentSlide].name.charAt(0)}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="font-heading font-semibold text-foreground">
-                          {textTestimonials[currentSlide].name}
-                        </p>
-                        <p className="font-mono text-xs text-muted-foreground mt-0.5">
-                          {textTestimonials[currentSlide].role} —{" "}
-                          {textTestimonials[currentSlide].company}
-                        </p>
+                    {/* Closing quote icon */}
+                    <div className="mt-4 flex justify-end">
+                      <Quote className="w-8 h-8 text-[hsl(160_62%_35%)] rotate-180" strokeWidth={2} />
+                    </div>
+
+                    {/* Client info - elegant layout */}
+                    <div className="mt-10 pt-8 border-t border-white/10">
+                      <div className="flex items-center gap-4">
+                        {/* Professional circular photo */}
+                        <div className="relative flex-shrink-0">
+                          <div className="absolute inset-0 bg-[hsl(160_62%_35%)] blur-md opacity-20" />
+                          <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-white/10">
+                            <img 
+                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${textTestimonials[currentSlide].name}`}
+                              alt={textTestimonials[currentSlide].name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                        
+                        {/* Client details - refined typography */}
+                        <div className="flex-1">
+                          <p className="font-heading text-base font-bold text-white mb-1">
+                            {textTestimonials[currentSlide].name}
+                          </p>
+                          <p className="font-sans text-sm text-white/60">
+                            {textTestimonials[currentSlide].role}
+                          </p>
+                          <p className="font-mono text-xs text-[hsl(160_62%_45%)] mt-0.5 tracking-wider">
+                            {textTestimonials[currentSlide].company}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </motion.div>
                 </AnimatePresence>
 
-                {/* Progress dots */}
-                <div className="flex gap-2 mt-10 pt-6 border-t border-border">
+                {/* Refined progress indicators */}
+                <div className="flex gap-2 mt-8">
                   {textTestimonials.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentSlide(index)}
-                      className="relative h-1 overflow-hidden transition-all duration-300"
-                      style={{ width: index === currentSlide ? "40px" : "12px" }}
+                      className="relative h-[3px] overflow-hidden transition-all duration-300"
+                      style={{ width: index === currentSlide ? "56px" : "16px" }}
                       aria-label={`Go to testimonial ${index + 1}`}
                     >
-                      <div className="absolute inset-0 bg-foreground/20" />
+                      <div className="absolute inset-0 bg-white/10" />
                       {index === currentSlide && (
                         <motion.div
-                          className="absolute inset-0 bg-primary"
+                          className="absolute inset-0 bg-[hsl(160_62%_40%)]"
                           initial={{ scaleX: 0 }}
                           animate={{ scaleX: 1 }}
                           transition={{ duration: 6, ease: "linear" }}
@@ -189,6 +263,9 @@ const TestimonialsSection = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Subtle glow on hover */}
+              <div className="absolute inset-0 bg-gradient-to-tl from-[hsl(160_62%_30%/0.05)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             </div>
           </motion.div>
         </div>
