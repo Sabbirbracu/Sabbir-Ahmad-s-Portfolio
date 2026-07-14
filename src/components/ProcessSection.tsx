@@ -141,34 +141,63 @@ const ProcessSection = () => {
                   )}
                 </div>
 
-                {/* Phase content card */}
-                <div className="flex-1 bg-white border border-[hsl(165_28%_11%/0.08)] hover:border-[hsl(160_62%_26%)] p-6 transition-all duration-300 hover:shadow-lg">
-                  <h3 className="font-heading text-xl md:text-2xl font-bold tracking-tight text-foreground mb-2">
-                    {phase.title}
-                  </h3>
-                  <p className="font-medium text-sm text-[hsl(160_62%_26%)] mb-3">
-                    {phase.hook}
-                  </p>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                    {phase.description}
-                  </p>
+                {/* Flip card container */}
+                <div className="flex-1 group perspective-1000">
+                  <div className="relative preserve-3d transition-transform duration-700 group-hover:rotate-y-180" style={{ transformStyle: 'preserve-3d', minHeight: '320px' }}>
+                    {/* Front of card - Clean & Minimal with gradient */}
+                    <div className="absolute inset-0 backface-hidden bg-gradient-to-br from-white via-[hsl(78_26%_99%)] to-[hsl(160_62%_98%)] border border-[hsl(165_28%_11%/0.08)] p-8 flex flex-col justify-center items-center text-center shadow-lg overflow-hidden">
+                      {/* Curved line background graphics */}
+                      <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
+                        <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                          <path d="M0,50 Q150,20 300,50 T600,50" stroke="hsl(160 62% 26%)" strokeWidth="2" fill="none" />
+                          <path d="M0,150 Q200,120 400,150 T800,150" stroke="hsl(160 62% 26%)" strokeWidth="2" fill="none" />
+                          <circle cx="80%" cy="30%" r="60" stroke="hsl(160 62% 26%)" strokeWidth="1.5" fill="none" />
+                        </svg>
+                      </div>
 
-                  {/* Outcomes */}
-                  <div className="pt-4 border-t border-[hsl(165_28%_11%/0.08)]">
-                    <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-[hsl(165_28%_11%/0.5)] font-semibold mb-3">
-                      {phase.outcomeLabel}
-                    </p>
-                    <ul className="space-y-2">
-                      {phase.outcomes.map((item) => (
-                        <li
-                          key={item}
-                          className="flex items-start gap-2 text-sm text-foreground"
-                        >
-                          <Check className="w-4 h-4 mt-0.5 shrink-0 text-[hsl(160_62%_26%)]" strokeWidth={2.5} />
-                          <span className="leading-relaxed">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
+                      {/* Subtle gradient orbs */}
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-[hsl(160_62%_26%/0.08)] to-transparent rounded-full blur-2xl" />
+                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-radial from-[hsl(42_88%_50%/0.06)] to-transparent rounded-full blur-2xl" />
+
+                      <div className="relative z-10">
+                        <h3 className="font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-3">
+                          {phase.title}
+                        </h3>
+                        <p className="font-medium text-base text-[hsl(160_62%_26%)] leading-relaxed">
+                          {phase.hook}
+                        </p>
+                        <div className="mt-6 text-xs text-[hsl(165_28%_11%/0.4)] uppercase tracking-wider font-mono">
+                          Hover for details
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Back of card - Detailed Information */}
+                    <div className="absolute inset-0 backface-hidden rotate-y-180 bg-gradient-to-br from-[hsl(160_62%_26%)] via-[hsl(160_62%_27%)] to-[hsl(160_62%_28%)] border border-[hsl(160_62%_26%)] p-6 flex flex-col shadow-xl overflow-hidden" style={{ transform: 'rotateY(180deg)' }}>
+                      <div className="flex-1 relative z-10 overflow-y-auto">
+                        <p className="text-sm text-white/90 leading-relaxed mb-4">
+                          {phase.description}
+                        </p>
+
+                        {/* Outcomes */}
+                        <div className="pt-3 border-t border-white/20">
+                          <p className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/60 font-semibold mb-2">
+                            {phase.outcomeLabel}
+                          </p>
+                          <ul className="space-y-1.5">
+                            {phase.outcomes.map((item) => (
+                              <li
+                                key={item}
+                                className="flex items-start gap-2 text-xs text-white"
+                              >
+                                <Check className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[hsl(42_88%_50%)]" strokeWidth={2.5} />
+                                <span className="leading-relaxed">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </motion.div>

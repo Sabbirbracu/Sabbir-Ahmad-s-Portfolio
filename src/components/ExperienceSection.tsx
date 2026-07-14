@@ -57,12 +57,12 @@ const ExperienceSection = () => {
           <p className="eyebrow mb-6">
             <span className="eyebrow-index">06</span> — Experience
           </p>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <h2 className="font-heading text-5xl md:text-6xl font-bold tracking-tight text-foreground max-w-2xl">
+          <div className="flex flex-col gap-6">
+            <h2 className="font-heading text-[2.75rem] leading-[1.1] sm:text-[3.5rem] md:text-[4.25rem] lg:text-[5rem] sm:leading-[1.05] lg:leading-[1.02] font-extrabold tracking-[-0.04em] text-foreground">
               Building software since{" "}
-              <span className="text-primary">2024</span>.
+              <span className="bg-gradient-to-br from-[hsl(160_62%_22%)] via-[hsl(160_62%_24%)] to-[hsl(95_55%_32%)] bg-clip-text text-transparent">2024</span>
             </h2>
-            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-3xl">
               Working with startups and businesses to transform ideas into
               production-ready digital products.
             </p>
@@ -77,11 +77,11 @@ const ExperienceSection = () => {
           <div className="space-y-8 md:space-y-10">
             {experiences.map((exp, index) => {
               const accentText =
-                exp.accent === "amber" ? "text-amber" : "text-primary";
+                exp.accent === "amber" ? "text-[hsl(42_88%_50%)]" : "text-[hsl(160_62%_26%)]";
               const accentBar =
-                exp.accent === "amber" ? "bg-amber" : "bg-primary";
+                exp.accent === "amber" ? "bg-[hsl(42_88%_50%)]" : "bg-[hsl(160_62%_26%)]";
               const accentBorder =
-                exp.accent === "amber" ? "border-amber" : "border-primary";
+                exp.accent === "amber" ? "border-[hsl(42_88%_50%)]" : "border-[hsl(160_62%_26%)]";
 
               return (
                 <motion.div
@@ -130,20 +130,20 @@ const ExperienceSection = () => {
                       </div>
 
                       {/* Role + company */}
-                      <h3 className="mt-5 font-heading text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
+                      <h3 className="mt-5 font-heading text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                         {exp.role}
                       </h3>
-                      <p className="mt-1.5 text-sm md:text-base text-foreground/80">
-                        <span className="font-medium text-foreground">
+                      <p className="mt-1.5 text-base md:text-lg text-foreground/80">
+                        <span className="font-semibold text-foreground">
                           {exp.company}
                         </span>
-                        <span className={`ml-2 font-mono text-xs uppercase tracking-[0.1em] ${accentText}`}>
+                        <span className={`ml-2 font-mono text-xs uppercase tracking-[0.12em] ${accentText} font-bold`}>
                           {exp.type}
                         </span>
                       </p>
 
                       {/* Summary */}
-                      <p className="mt-5 text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
+                      <p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl">
                         {exp.summary}
                       </p>
 
