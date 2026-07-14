@@ -21,7 +21,7 @@ const collectImages = (p: Project): string[] => {
 };
 
 const StatusPill = ({ project }: { project: Project }) => (
-  <span className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm border-2 border-[hsl(165_28%_11%)] px-3 py-1.5 font-mono text-[10px] tracking-[0.15em] uppercase text-foreground font-semibold shadow-sm">
+  <span className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm border border-[hsl(165_28%_11%/0.15)] px-3 py-1.5 font-mono text-[10px] tracking-[0.15em] uppercase text-foreground font-semibold shadow-sm">
     {project.status === "in-progress" ? (
       <>
         <span className="relative flex h-2 w-2">
@@ -32,8 +32,11 @@ const StatusPill = ({ project }: { project: Project }) => (
       </>
     ) : (
       <>
-        <span className="inline-flex rounded-full h-2 w-2 bg-[hsl(160_62%_26%)]" />
-        {getStatusLabel(project.status)}
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-60" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+        </span>
+        Live
       </>
     )}
   </span>
@@ -85,7 +88,7 @@ const ProjectShowcase = ({
             </div>
 
             {/* Premium top badge */}
-            <div className="absolute top-6 left-6 z-20">
+            <div className="absolute top-4 left-4 z-20">
               <StatusPill project={project} />
             </div>
 
@@ -127,7 +130,7 @@ const ProjectShowcase = ({
             </div>
 
             {/* Top badge */}
-            <div className="absolute top-6 left-6 z-20">
+            <div className="absolute top-2 left-2 z-20">
               <StatusPill project={project} />
             </div>
           </>

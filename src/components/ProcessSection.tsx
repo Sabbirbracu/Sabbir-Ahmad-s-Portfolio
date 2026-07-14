@@ -249,7 +249,7 @@ const ProcessSection = () => {
                       .getElementById("contact")
                       ?.scrollIntoView({ behavior: "smooth" })
                   }
-                  className="group inline-flex items-center gap-2 bg-primary text-primary-foreground hover:bg-foreground hover:scale-105 h-12 px-6 font-mono text-xs tracking-[0.15em] uppercase font-bold transition-all duration-300 shadow-lg hover:shadow-2xl"
+                  className="group inline-flex items-center gap-2 bg-primary text-primary-foreground hover:bg-foreground hover:scale-105 h-12 px-6 font-mono text-xs tracking-[0.15em] uppercase font-bold transition-all duration-300 shadow-lg hover:shadow-2xl hover:border-2 hover:border-white"
                 >
                   Start Phase 01
                   <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

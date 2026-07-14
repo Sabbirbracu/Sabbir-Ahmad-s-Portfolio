@@ -112,10 +112,10 @@ const ServicesSection = () => {
               className="group relative bg-gradient-to-br from-white to-[hsl(78_26%_99%)] border border-[hsl(165_28%_11%/0.08)] hover:border-[hsl(160_62%_26%)] p-10 transition-all duration-500 hover:shadow-2xl overflow-hidden"
             >
               {/* Premium gradient overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[hsl(160_62%_26%/0.02)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[hsl(42_88%_50%/0.03)] to-[hsl(160_62%_26%/0.03)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
-              {/* Subtle top accent line */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[hsl(160_62%_26%)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              {/* Subtle top accent line with amber-to-green gradient */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(42_88%_50%)] via-[hsl(160_62%_26%)] to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
 
               {/* Number badge - refined */}
               <div className="absolute top-8 right-8">
@@ -126,7 +126,7 @@ const ServicesSection = () => {
 
               {/* Icon - premium style */}
               <div className="relative">
-                <div className="absolute inset-0 bg-[hsl(160_62%_26%)] blur-md opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[hsl(42_88%_50%)] to-[hsl(160_62%_26%)] blur-md opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
                 <div className="relative flex items-center justify-center w-16 h-16 bg-[hsl(160_62%_26%)] text-white shadow-xl">
                   <service.icon className="w-7 h-7" strokeWidth={1.5} />
                 </div>
@@ -141,10 +141,10 @@ const ServicesSection = () => {
               </p>
 
               {/* Bottom corner accent - subtle luxury detail */}
-              <div className="absolute bottom-0 right-0 w-12 h-12 border-r-[3px] border-b-[3px] border-[hsl(160_62%_26%/0.1)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute bottom-0 right-0 w-12 h-12 border-r-[3px] border-b-[3px] border-[hsl(42_88%_50%/0.2)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
               {/* Decorative dot */}
-              <div className="absolute bottom-8 left-10 w-1.5 h-1.5 bg-[hsl(160_62%_26%)] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute bottom-8 left-10 w-1.5 h-1.5 bg-[hsl(42_88%_50%)] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           ))}
 

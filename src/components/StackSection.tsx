@@ -21,7 +21,7 @@ const skillGroups = [
     label: "AI & Machine Learning",
     icon: Brain,
     ai: true,
-    items: ["Python", "PyTorch", "TensorFlow", "OpenCV", "NumPy", "Pandas", "Computer Vision"],
+    items: ["Python", "PyTorch", "TensorFlow", "OpenCV", "LangChain", "LangGraph", "NumPy", "Pandas", "Computer Vision"],
   },
 ];
 
@@ -40,12 +40,12 @@ const StackSection = () => {
           <p className="eyebrow mb-6">
             <span className="eyebrow-index">07</span> — Engineering Stack
           </p>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <h2 className="font-heading text-5xl md:text-6xl font-bold tracking-tight text-foreground max-w-2xl">
+          <div className="flex flex-col gap-6">
+            <h2 className="font-heading text-[2.75rem] leading-[1.1] sm:text-[3.5rem] md:text-[4.25rem] lg:text-[5rem] sm:leading-[1.05] lg:leading-[1.02] font-extrabold tracking-[-0.04em] text-foreground">
               Technologies I use to build{" "}
-              <span className="text-primary">production systems</span>.
+              <span className="bg-gradient-to-br from-[hsl(160_62%_22%)] via-[hsl(160_62%_24%)] to-[hsl(95_55%_32%)] bg-clip-text text-transparent">production systems</span>
             </h2>
-            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-3xl">
               Production-tested across the stack, from interface to
               infrastructure to intelligence.
             </p>
@@ -70,17 +70,17 @@ const StackSection = () => {
                 <span
                   className={`flex items-center justify-center w-9 h-9 shrink-0 border ${
                     group.ai
-                      ? "border-amber/50 text-amber"
-                      : "border-border text-primary"
+                      ? "border-[hsl(42_88%_50%)] text-[hsl(42_88%_50%)]"
+                      : "border-[hsl(160_62%_26%)] text-[hsl(160_62%_26%)]"
                   }`}
                 >
                   <group.icon className="w-4 h-4" />
                 </span>
                 <span className="flex items-baseline gap-1.5">
-                  <span className="font-mono text-[10px] text-primary">
+                  <span className="font-mono text-[10px] text-[hsl(160_62%_26%)] font-bold">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="font-heading text-base font-semibold text-foreground">
+                  <span className="font-heading text-base font-bold text-foreground">
                     {group.label}
                   </span>
                 </span>
@@ -91,10 +91,10 @@ const StackSection = () => {
                 {group.items.map((tech) => (
                   <span
                     key={tech}
-                    className={`rounded-full px-3 py-1.5 font-mono text-[11px] tracking-[0.04em] transition-colors ${
+                    className={`rounded-full px-3 py-1.5 font-mono text-[11px] tracking-[0.04em] font-medium transition-colors ${
                       group.ai
-                        ? "border border-dashed border-amber/50 text-amber/90 hover:bg-amber/10"
-                        : "border border-border bg-background text-foreground/80 hover:border-primary hover:text-primary"
+                        ? "border border-dashed border-[hsl(42_88%_50%)] text-[hsl(42_88%_50%)] hover:bg-[hsl(42_88%_50%/0.1)]"
+                        : "border border-border bg-background text-foreground/80 hover:border-[hsl(160_62%_26%)] hover:text-[hsl(160_62%_26%)]"
                     }`}
                   >
                     {tech}

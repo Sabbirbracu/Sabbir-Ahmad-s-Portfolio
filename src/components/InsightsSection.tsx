@@ -67,39 +67,35 @@ const ArticleCover = ({
   featured?: boolean;
 }) => {
   const Icon = article.icon;
-  const accentText = article.accent === "amber" ? "text-amber" : "text-primary";
-  const accentBorder =
-    article.accent === "amber" ? "border-amber/40" : "border-primary/40";
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-border section-dark bg-dark-glow ${
+      className={`relative overflow-hidden rounded-xl border border-[hsl(160_62%_30%/0.15)] bg-gradient-to-br from-[hsl(162_30%_14%)] via-[hsl(162_30%_12%)] to-[hsl(162_30%_10%)] ${
         featured ? "h-full min-h-[260px]" : "aspect-[16/9]"
       }`}
     >
-      {/* Ghost index */}
-      <span className="pointer-events-none absolute -right-3 -bottom-8 font-heading text-[9rem] leading-none font-semibold text-[hsl(78_30%_95%/0.05)] select-none">
+      {/* Clean ghost index */}
+      <span className="pointer-events-none absolute -right-2 -bottom-5 font-heading text-[7rem] leading-none font-extrabold text-white/[0.025] select-none">
         {String(index + 1).padStart(2, "0")}
       </span>
 
-      {/* Icon emblem */}
+      {/* Icon emblem - centered and clean */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span
-          className={`flex items-center justify-center border ${accentBorder} bg-[hsl(160_20%_16%/0.6)] backdrop-blur-sm transition-transform duration-500 group-hover:scale-110 ${
-            featured ? "w-20 h-20" : "w-14 h-14"
-          }`}
-        >
-          <Icon className={`${featured ? "w-9 h-9" : "w-6 h-6"} ${accentText}`} />
-        </span>
+        <div className="relative">
+          {/* Subtle glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(160_62%_30%/0.2)] to-[hsl(160_62%_30%/0.05)] blur-2xl opacity-60 group-hover:opacity-80 transition-opacity" />
+          <span
+            className={`relative flex items-center justify-center bg-[hsl(160_62%_26%)] border border-[hsl(160_62%_35%/0.3)] transition-all duration-500 group-hover:scale-110 group-hover:bg-[hsl(160_62%_28%)] ${
+              featured ? "w-20 h-20" : "w-16 h-16"
+            }`}
+          >
+            <Icon className={`${featured ? "w-9 h-9" : "w-7 h-7"} text-white`} />
+          </span>
+        </div>
       </div>
 
-      {/* Category chip */}
-      <span className="absolute top-4 left-4 font-mono text-[10px] tracking-[0.15em] uppercase text-[hsl(78_30%_92%)] border border-[hsl(158_14%_28%)] bg-[hsl(162_30%_10%/0.7)] backdrop-blur-sm rounded-full px-3 py-1.5">
-        {article.category}
-      </span>
-
-      {/* Coming soon pill */}
-      <span className="absolute top-4 right-4 inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.15em] uppercase text-amber border border-amber/40 bg-[hsl(162_30%_10%/0.7)] backdrop-blur-sm rounded-full px-3 py-1.5">
+      {/* Coming soon pill - bottom right */}
+      <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 font-mono text-[9px] tracking-[0.16em] uppercase text-[hsl(42_88%_55%)] border border-[hsl(42_88%_50%/0.25)] bg-[hsl(42_88%_15%/0.3)] backdrop-blur-sm rounded-full px-2.5 py-1.5 font-semibold">
         Soon
       </span>
     </div>
@@ -110,25 +106,33 @@ const InsightsSection = () => {
   const [featured, ...rest] = articles;
 
   return (
-    <section id="insights" className="section-sand py-20 md:py-28">
-      <div className="section-container">
+    <section id="insights" className="relative py-20 md:py-28 overflow-hidden">
+      {/* Background graphics */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-gradient-radial from-[hsl(160_62%_26%/0.08)] to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-radial from-[hsl(42_88%_50%/0.05)] to-transparent rounded-full blur-3xl" />
+      </div>
+
+      <div className="section-container relative z-10">
         {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="rule pt-8 mb-14 md:mb-20"
+          className="mb-14 md:mb-20"
         >
-          <p className="eyebrow mb-6">
-            <span className="eyebrow-index">09</span> — Insights
-          </p>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <h2 className="font-heading text-5xl md:text-6xl font-bold tracking-tight text-foreground max-w-2xl">
-              Sharing what I learn while{" "}
-              <span className="text-primary">building software</span>.
+          <div className="border-t border-border pt-8">
+            <p className="eyebrow mb-6">
+              <span className="text-[hsl(160_62%_40%)]">09</span> <span className="text-muted-foreground">— Insights</span>
+            </p>
+            <h2 className="font-heading text-[2.75rem] leading-[1.1] sm:text-[3.5rem] md:text-[4.25rem] lg:text-[5rem] sm:leading-[1.05] lg:leading-[1.02] font-extrabold tracking-[-0.04em] text-foreground mb-6">
+              Sharing what I learn
+              <br />
+              while{" "}
+              <span className="bg-gradient-to-br from-[hsl(160_62%_22%)] via-[hsl(160_62%_26%)] to-[hsl(95_55%_32%)] bg-clip-text text-transparent">building software</span>
             </h2>
-            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed">
               Articles on software engineering, SaaS architecture, AI
               development, and lessons from production systems.
             </p>
@@ -141,23 +145,31 @@ const InsightsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="group grid md:grid-cols-2 gap-6 md:gap-8 border border-border bg-card rounded-2xl p-4 md:p-5 mb-6 md:mb-8 cursor-default transition-colors hover:border-primary/40"
+          className="group grid md:grid-cols-2 gap-6 md:gap-8 border border-[hsl(160_62%_30%/0.15)] bg-card rounded-xl p-5 md:p-6 mb-6 md:mb-8 cursor-default transition-all duration-300 hover:border-[hsl(160_62%_35%/0.3)] hover:shadow-lg hover:shadow-[hsl(160_62%_26%/0.08)]"
         >
           <ArticleCover article={featured} index={0} featured />
 
-          <div className="flex flex-col justify-center p-2 md:p-6">
-            <p className="font-mono text-[11px] tracking-[0.15em] uppercase text-muted-foreground">
-              <span className="text-primary">Featured</span> · {featured.readTime}
-            </p>
-            <h3 className="mt-4 font-heading text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
+          <div className="flex flex-col justify-center p-2 md:p-4">
+            {/* Category badge */}
+            <div className="inline-flex items-center gap-2 mb-3">
+              <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-[hsl(160_62%_40%)] bg-[hsl(160_62%_30%/0.1)] border border-[hsl(160_62%_30%/0.2)] px-2.5 py-1 font-bold">
+                {featured.category}
+              </span>
+              <span className="text-muted-foreground text-xs">·</span>
+              <span className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted-foreground">
+                {featured.readTime}
+              </span>
+            </div>
+            
+            <h3 className="font-heading text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground group-hover:text-[hsl(160_62%_35%)] transition-colors">
               {featured.title}
             </h3>
             <p className="mt-4 text-sm md:text-base text-muted-foreground leading-relaxed max-w-lg">
               {featured.excerpt}
             </p>
-            <span className="mt-8 inline-flex items-center gap-2 font-mono text-xs tracking-[0.15em] uppercase text-foreground">
+            <span className="mt-8 inline-flex items-center gap-2 font-mono text-xs tracking-[0.15em] uppercase text-foreground font-bold">
               Publishing soon
-              <ArrowUpRight className="w-4 h-4 text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <ArrowUpRight className="w-4 h-4 text-[hsl(160_62%_40%)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </span>
           </div>
         </motion.article>
@@ -171,19 +183,26 @@ const InsightsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.06 }}
-              className="group flex flex-col border border-border bg-card rounded-2xl p-4 cursor-default transition-all hover:border-primary/40 hover:-translate-y-1"
+              className="group flex flex-col border border-[hsl(160_62%_30%/0.15)] bg-card rounded-xl p-4 cursor-default transition-all duration-300 hover:border-[hsl(160_62%_35%/0.3)] hover:-translate-y-1.5 hover:shadow-lg hover:shadow-[hsl(160_62%_26%/0.08)]"
             >
               <ArticleCover article={article} index={i + 1} />
 
               <div className="flex flex-col flex-1 pt-5 px-1 pb-2">
-                <p className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted-foreground">
-                  {article.readTime}
-                </p>
-                <h3 className="mt-2 font-heading text-base md:text-lg font-semibold tracking-tight leading-snug text-foreground group-hover:text-primary transition-colors">
+                {/* Category badge */}
+                <span className="inline-flex items-center w-fit font-mono text-[9px] tracking-[0.18em] uppercase text-[hsl(160_62%_40%)] bg-[hsl(160_62%_30%/0.1)] border border-[hsl(160_62%_30%/0.2)] px-2 py-1 mb-3 font-bold">
+                  {article.category}
+                </span>
+                
+                <h3 className="font-heading text-base md:text-lg font-extrabold tracking-tight leading-snug text-foreground group-hover:text-[hsl(160_62%_35%)] transition-colors">
                   {article.title}
                 </h3>
                 <p className="mt-2.5 text-[13px] text-muted-foreground leading-relaxed line-clamp-3">
                   {article.excerpt}
+                </p>
+                
+                {/* Read time at bottom */}
+                <p className="mt-auto pt-4 font-mono text-[10px] tracking-[0.15em] uppercase text-muted-foreground">
+                  {article.readTime}
                 </p>
               </div>
             </motion.article>
