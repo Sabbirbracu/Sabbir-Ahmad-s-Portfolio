@@ -34,10 +34,10 @@ const ProjectDetails = () => {
     );
   }
 
-  const caseStudy = project.caseStudy;
-  const techStack = project.techStack;
-  const links = project.links;
-  const media = project.media;
+  const caseStudy = project?.caseStudy;
+  const techStack = project?.techStack;
+  const links = project?.links;
+  const media = project?.media || {};
 
   return (
     <main className="min-h-screen bg-background">

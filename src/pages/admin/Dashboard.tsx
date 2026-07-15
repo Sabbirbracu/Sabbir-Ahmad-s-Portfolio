@@ -21,8 +21,8 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Import dashboard sections
 import AppointmentsSection from "@/components/admin/AppointmentsSection";
@@ -51,10 +51,25 @@ const stats = [
 ];
 
 const Dashboard = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  // Sync activeTab with URL parameter
+  useEffect(() => {
+    const tab = searchParams.get("tab") as TabType;
+    if (tab && ["overview", "articles", "experiences", "skills", "projects", "appointments", "settings"].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  // Update URL when tab changes
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab);
+    setSearchParams({ tab });
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -118,7 +133,7 @@ const Dashboard = () => {
             {sidebarItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleTabChange(item.id)}
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
                   activeTab === item.id

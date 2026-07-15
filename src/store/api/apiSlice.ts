@@ -170,10 +170,18 @@ export const apiSlice = createApi({
         if (params?.featured !== undefined) queryParams.append("featured", String(params.featured));
         return `/projects${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
       },
+      transformResponse: (response: any) => {
+        // Transform API response to return just the data array
+        return response?.data || response || [];
+      },
       providesTags: ["Projects"],
     }),
     getProjectBySlug: builder.query<Project, string>({
       query: (slug) => `/projects/${slug}`,
+      transformResponse: (response: any) => {
+        // Transform API response to return just the data object
+        return response?.data || response || {};
+      },
       providesTags: ["Projects"],
     }),
     createProject: builder.mutation<{ success: boolean; data: Project }, Partial<Project>>({
