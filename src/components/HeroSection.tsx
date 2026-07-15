@@ -94,7 +94,7 @@ const HeroSection = () => {
 
           <p className="text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-6 md:mb-8">
             I help startups and growing businesses transform ideas into
-            reliable production-ready systems — from system architecture
+            reliable production ready systems — from system architecture
             and development to deployment.
           </p>
 

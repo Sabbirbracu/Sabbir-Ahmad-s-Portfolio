@@ -1,15 +1,12 @@
-import projects from "@/data/projects";
-import { Project, getStatusLabel } from "@/types/project";
+import { Project } from "@/types/project";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import projects from "@/data/projects";
 
 /* Client-facing selection, in pitch order */
 const FEATURED_ORDER = ["rchms", "shaadimartbd", "ai-customer-support"];
-const featuredProjects = FEATURED_ORDER.map((slug) =>
-  projects.find((p) => p.slug === slug),
-).filter(Boolean) as Project[];
 
 const collectImages = (p: Project): string[] => {
   const imgs: string[] = [];
@@ -148,6 +145,14 @@ const ProjectShowcase = ({
 };
 
 const ProjectsSection = () => {
+  const featuredProjects = useMemo(
+    () =>
+      FEATURED_ORDER.map((slug) => projects.find((p) => p.slug === slug)).filter(
+        Boolean,
+      ) as Project[],
+    [],
+  );
+
   return (
     <section id="work" className="relative py-20 md:py-28 overflow-hidden">
       {/* Clean background graphics */}

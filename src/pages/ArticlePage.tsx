@@ -1,13 +1,23 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Clock, Share2 } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { getArticleById } from "@/data/articles";
+import { useGetArticleBySlugQuery } from "@/store/api/apiSlice";
 import { Button } from "@/components/ui/button";
 
 const ArticlePage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const article = id ? getArticleById(id) : undefined;
+  const { data: article, isLoading } = useGetArticleBySlugQuery(id ?? "", { skip: !id });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="font-mono text-xs tracking-[0.18em] uppercase text-muted-foreground animate-pulse">
+          Loading article…
+        </p>
+      </div>
+    );
+  }
 
   if (!article) {
     return (

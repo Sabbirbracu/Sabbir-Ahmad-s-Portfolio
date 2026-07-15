@@ -1,14 +1,30 @@
-import { ArrowLeft, ArrowUpRight, Check, ExternalLink, Github } from "lucide-react";
+import { ArrowUpRight, Check, ExternalLink, Github } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import projects from "../data/projects";
+import { useGetProjectBySlugQuery } from "@/store/api/apiSlice";
 import { getStatusLabel, getTypeLabel, hasCaseStudy } from "../types/project";
 import { motion } from "framer-motion";
+import Navbar from "../components/Navbar";
 
 const ProjectDetails = () => {
   const { slug } = useParams<{ slug: string }>();
-  const project = projects.find((p) => p.slug === slug);
+  const { data: project, isLoading, isError } = useGetProjectBySlugQuery(slug ?? "", {
+    skip: !slug,
+  });
 
-  if (!project) {
+  if (isLoading) {
+    return (
+      <main className="min-h-screen bg-background">
+        <Navbar />
+        <div className="section-container pt-40 pb-24 text-center">
+          <p className="font-mono text-xs tracking-[0.18em] uppercase text-muted-foreground animate-pulse">
+            Loading project…
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  if (isError || !project) {
     return (
       <div className="section-container py-24">
         <h2 className="text-2xl font-bold mb-4">Project not found</h2>
@@ -25,6 +41,9 @@ const ProjectDetails = () => {
 
   return (
     <main className="min-h-screen bg-background">
+      {/* Add Navbar */}
+      <Navbar />
+      
       {/* Hero Section */}
       <section className="relative pt-24 pb-16 md:pt-32 md:pb-20 overflow-hidden bg-gradient-to-b from-[hsl(78_26%_99%)] to-white">
         {/* Background graphics */}
@@ -34,15 +53,6 @@ const ProjectDetails = () => {
         </div>
 
         <div className="section-container relative z-10">
-          {/* Back button */}
-          <Link 
-            to="/projects" 
-            className="inline-flex items-center gap-2 font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-[hsl(160_62%_26%)] transition-colors mb-8 md:mb-12"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Projects
-          </Link>
-
           {/* Hero content */}
           <div className="max-w-4xl">
             <div className="flex items-center gap-3 mb-6">
@@ -165,46 +175,114 @@ const ProjectDetails = () => {
 
       {/* Problem & Solution */}
       {(caseStudy?.problem || caseStudy?.solution) && (
-        <section className="section-container py-12 md:py-16 border-t border-border">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-            {caseStudy?.problem && (
-              <motion.div
-                initial={{ opacity: 0, x: -24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                <div className="inline-flex items-center gap-2 mb-6">
-                  <div className="w-8 h-[2px] bg-[hsl(42_88%_50%)]" />
-                  <h3 className="font-heading text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
-                    The Problem
-                  </h3>
-                </div>
-                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                  {caseStudy.problem}
-                </p>
-              </motion.div>
-            )}
+        <section className="section-container py-12 md:py-20 border-t border-border bg-gradient-to-b from-white via-[hsl(78_26%_99%)] to-white">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-5xl mx-auto"
+          >
+            {/* Section Header */}
+            <div className="text-center mb-12 md:mb-16">
+              <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-[hsl(160_62%_40%)] bg-[hsl(160_62%_30%/0.1)] border border-[hsl(160_62%_30%/0.2)] px-3 py-1.5 font-bold">
+                Challenge & Approach
+              </span>
+              <h2 className="font-heading text-3xl md:text-4xl font-extrabold tracking-tight text-foreground mt-6">
+                From <span className="text-[hsl(42_88%_50%)]">Problem</span> to{" "}
+                <span className="text-[hsl(160_62%_26%)]">Solution</span>
+              </h2>
+            </div>
 
-            {caseStudy?.solution && (
-              <motion.div
-                initial={{ opacity: 0, x: 24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                <div className="inline-flex items-center gap-2 mb-6">
-                  <div className="w-8 h-[2px] bg-[hsl(160_62%_26%)]" />
-                  <h3 className="font-heading text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
-                    The Solution
-                  </h3>
+            {/* Problem & Solution Cards */}
+            <div className="relative">
+              {/* Connecting Arrow/Line */}
+              <div className="hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                <div className="flex items-center gap-2">
+                  <div className="w-12 h-[2px] bg-gradient-to-r from-[hsl(42_88%_50%)] to-[hsl(160_62%_26%)]" />
+                  <svg className="w-6 h-6 text-[hsl(160_62%_26%)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                  <div className="w-12 h-[2px] bg-gradient-to-r from-[hsl(160_62%_26%)] to-transparent" />
                 </div>
-                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                  {caseStudy.solution}
-                </p>
-              </motion.div>
-            )}
-          </div>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+                {/* Problem Card */}
+                {caseStudy?.problem && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -24 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="relative"
+                  >
+                    <div className="h-full bg-white border-2 border-[hsl(42_88%_50%/0.2)] p-8 md:p-10 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                      {/* Problem Icon */}
+                      <div className="inline-flex items-center justify-center w-14 h-14 bg-[hsl(42_88%_50%/0.1)] border-2 border-[hsl(42_88%_50%)] mb-6">
+                        <svg className="w-7 h-7 text-[hsl(42_88%_50%)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      </div>
+
+                      {/* Problem Title */}
+                      <h3 className="font-heading text-2xl md:text-3xl font-extrabold tracking-tight text-foreground mb-4 flex items-center gap-3">
+                        <span>The Problem</span>
+                      </h3>
+
+                      {/* Problem Description */}
+                      <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                        {caseStudy.problem}
+                      </p>
+
+                      {/* Corner Accent */}
+                      <div className="absolute top-0 left-0 w-20 h-20 border-l-4 border-t-4 border-[hsl(42_88%_50%/0.3)]" />
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Solution Card */}
+                {caseStudy?.solution && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 24 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="relative"
+                  >
+                    <div className="h-full bg-white border-2 border-[hsl(160_62%_26%/0.2)] p-8 md:p-10 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                      {/* Solution Icon */}
+                      <div className="inline-flex items-center justify-center w-14 h-14 bg-[hsl(160_62%_26%/0.1)] border-2 border-[hsl(160_62%_26%)] mb-6">
+                        <svg className="w-7 h-7 text-[hsl(160_62%_26%)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+
+                      {/* Solution Title */}
+                      <h3 className="font-heading text-2xl md:text-3xl font-extrabold tracking-tight text-foreground mb-4 flex items-center gap-3">
+                        <span>The Solution</span>
+                      </h3>
+
+                      {/* Solution Description */}
+                      <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                        {caseStudy.solution}
+                      </p>
+
+                      {/* Corner Accent */}
+                      <div className="absolute bottom-0 right-0 w-20 h-20 border-r-4 border-b-4 border-[hsl(160_62%_26%/0.3)]" />
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Mobile Arrow */}
+              <div className="lg:hidden flex justify-center my-6">
+                <svg className="w-8 h-8 text-[hsl(160_62%_26%)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </div>
+            </div>
+          </motion.div>
         </section>
       )}
 

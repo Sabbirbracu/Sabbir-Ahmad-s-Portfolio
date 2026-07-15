@@ -1,23 +1,14 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import projects from "@/data/projects";
-import { getStatusLabel } from "@/types/project";
+import { useGetProjectsQuery } from "@/store/api/apiSlice";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 
-// Project categories
-const categories = [
-  { id: "full-stack", title: "Full-Stack Custom Software", types: ["saas", "custom-app"] },
-  { id: "wordpress", title: "WordPress Development", types: ["wordpress"] },
-  { id: "shopify", title: "Shopify Development", types: ["ecommerce"] },
-  { id: "ai-apps", title: "AI Applications", types: ["ai-app"] },
-  { id: "ai-models", title: "AI Models", types: ["ai-ml"] },
-  { id: "ghl", title: "Go-High Level Automations", types: ["automation"] },
-];
-
 const Projects = () => {
+  const { data: projects = [], isLoading } = useGetProjectsQuery();
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
@@ -124,7 +115,7 @@ const Projects = () => {
 
           <div className="space-y-2">
             {projects
-              .filter(p => ["saas", "custom-app"].includes(p.type))
+              .filter((p) => p.type === "fullstack")
               .map((project, index) => (
                 <motion.div
                   key={project.id}
@@ -186,9 +177,11 @@ const Projects = () => {
                 </motion.div>
               ))}
             
-            {projects.filter(p => ["saas", "custom-app"].includes(p.type)).length === 0 && (
+            {projects.filter((p) => p.type === "fullstack").length === 0 && (
               <div className="text-center py-12 border border-dashed border-border bg-card">
-                <p className="font-mono text-sm text-muted-foreground">Projects coming soon</p>
+                <p className="font-mono text-sm text-muted-foreground">
+                  {isLoading ? "Loading projects…" : "Projects coming soon"}
+                </p>
               </div>
             )}
           </div>
@@ -241,75 +234,8 @@ const Projects = () => {
             </p>
           </div>
 
-          <div className="space-y-2">
-            {projects
-              .filter(p => p.type === "ecommerce")
-              .map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                >
-                  <Link
-                    to={`/projects/${project.slug}`}
-                    className="group block border border-border bg-card p-6 hover:border-[hsl(160_62%_26%/0.4)] hover:shadow-lg transition-all duration-300"
-                  >
-                    <div className="flex items-start justify-between gap-6">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 flex-wrap mb-2">
-                          <h3 className="font-heading text-xl md:text-2xl font-extrabold tracking-tight text-foreground group-hover:text-[hsl(160_62%_26%)] transition-colors">
-                            {project.title}
-                          </h3>
-                          <ArrowUpRight className="w-4 h-4 text-[hsl(160_62%_26%)] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                          
-                          {project.status === "live" && (
-                            <span className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm border border-[hsl(165_28%_11%/0.15)] px-2.5 py-1 font-mono text-[9px] tracking-[0.15em] uppercase text-foreground font-semibold shadow-sm">
-                              <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-60" />
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
-                              </span>
-                              Live
-                            </span>
-                          )}
-                        </div>
-                        
-                        <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-[hsl(160_62%_40%)] mb-3">
-                          {project.tagline}
-                        </p>
-                        
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {project.description}
-                        </p>
-
-                        <div className="flex flex-wrap gap-2 mt-4">
-                          {project.techStack?.primary?.slice(0, 4).map((tech) => (
-                            <span
-                              key={tech}
-                              className="px-2.5 py-1 border border-border bg-background font-mono text-[10px] text-foreground"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="text-right shrink-0">
-                        <p className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted-foreground">
-                          {project.year}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            
-            {projects.filter(p => p.type === "ecommerce").length === 0 && (
-              <div className="text-center py-12 border border-dashed border-border bg-card">
-                <p className="font-mono text-sm text-muted-foreground">Projects coming soon</p>
-              </div>
-            )}
+          <div className="text-center py-12 border border-dashed border-border bg-card">
+            <p className="font-mono text-sm text-muted-foreground">Projects coming soon</p>
           </div>
         </motion.div>
       </section>
@@ -424,9 +350,11 @@ const Projects = () => {
                 </motion.div>
               ))}
             
-            {projects.filter(p => p.type === "ai-ml").length === 0 && (
+            {projects.filter((p) => p.type === "ai-ml").length === 0 && (
               <div className="text-center py-12 border border-dashed border-border bg-card">
-                <p className="font-mono text-sm text-muted-foreground">Projects coming soon</p>
+                <p className="font-mono text-sm text-muted-foreground">
+                  {isLoading ? "Loading projects…" : "Projects coming soon"}
+                </p>
               </div>
             )}
           </div>
