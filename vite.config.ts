@@ -10,9 +10,8 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     proxy: {
       "/api": {
-        target: "http://localhost:5001",
+        target: "https://sabbirs-portfolio-backend.onrender.com",
         changeOrigin: true,
-        secure: false,
       },
     },
   },
