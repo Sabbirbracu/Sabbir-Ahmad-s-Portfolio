@@ -67,8 +67,9 @@ const AboutSection = () => {
               <div className="p-6">
                 <div className="relative overflow-hidden">
                   <img
-                    src="/img.webp"
+                    src="https://pub-9d3effc166864bf2a230513269e822dc.r2.dev/about/img.webp"
                     alt="Sabbir Ahmad"
+                    loading="lazy"
                     className="w-full aspect-[4/5] object-cover hover:scale-105 transition-transform duration-700"
                   />
                   {/* Corner accents */}

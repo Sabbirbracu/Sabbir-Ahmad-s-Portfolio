@@ -31,7 +31,7 @@ const Index = () => {
           content="Building software that solves real business problems — SaaS platforms, business systems, and AI-powered products."
         />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href="https://sabbirdev.com" />
+        <link rel="canonical" href="https://bysabbir.com" />
       </Helmet>
 
       <main className="min-h-screen bg-background">
