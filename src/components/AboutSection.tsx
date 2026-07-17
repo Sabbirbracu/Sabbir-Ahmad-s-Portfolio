@@ -67,7 +67,7 @@ const AboutSection = () => {
               <div className="p-6">
                 <div className="relative overflow-hidden">
                   <img
-                    src="/img.png"
+                    src="/img.webp"
                     alt="Sabbir Ahmad"
                     className="w-full aspect-[4/5] object-cover hover:scale-105 transition-transform duration-700"
                   />

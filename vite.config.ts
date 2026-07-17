@@ -15,6 +15,11 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  build: {
+    // Emit source maps so production JS can be mapped back to original source
+    // (resolves Lighthouse "missing source maps" best-practices finding).
+    sourcemap: true,
+  },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {

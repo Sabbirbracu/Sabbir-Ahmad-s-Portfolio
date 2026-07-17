@@ -172,8 +172,8 @@ const projects: Project[] = [
     visibility: "public",
 
     media: {
-      banner: "/Shaadimart_banner.png",
-      gallery: ["/Shaadimart1.png", "/Shaadimart2.png", "/Shaadimart3.png"],
+      banner: "/Shaadimart_banner.webp",
+      gallery: ["/Shaadimart1.webp", "/Shaadimart2.webp", "/Shaadimart3.webp"],
     },
 
     links: {
@@ -265,8 +265,8 @@ const projects: Project[] = [
     visibility: "public",
 
     media: {
-      banner: "/rchms_banner.png",
-      gallery: ["/rchms1.png", "/rchms2.png", "/rchms3.png"],
+      banner: "/rchms_banner.webp",
+      gallery: ["/rchms1.webp", "/rchms2.webp", "/rchms3.webp"],
     },
 
     links: {

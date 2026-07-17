@@ -58,6 +58,10 @@ const TestimonialsSection = () => {
   }, [isPaused]);
 
   const youtubeVideoId = "2Fs0-o5jeEU";
+  // Click-to-load facade: the YouTube iframe (and its tracking cookies) only
+  // mount after the visitor chooses to play, keeping the initial page load
+  // cookie-free and lighter.
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   return (
     <section id="testimonials" className="relative overflow-hidden py-20 md:py-28 bg-[hsl(165_28%_11%)]">
@@ -127,17 +131,39 @@ const TestimonialsSection = () => {
               {/* Video container with elegant padding */}
               <div className="p-6 md:p-8">
                 <div className="relative aspect-video bg-black/40 overflow-hidden">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${youtubeVideoId}?rel=0&modestbranding=1`}
-                    title="Client Testimonial Video"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
-                  
+                  {videoLoaded ? (
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${youtubeVideoId}?rel=0&modestbranding=1&autoplay=1`}
+                      title="Client Testimonial Video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setVideoLoaded(true)}
+                      aria-label="Play client testimonial video"
+                      className="group/play absolute inset-0 w-full h-full"
+                    >
+                      <img
+                        src={`https://i.ytimg.com/vi/${youtubeVideoId}/hqdefault.jpg`}
+                        alt="Client Testimonial Video thumbnail"
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
+                      <span className="absolute inset-0 bg-black/40 group-hover/play:bg-black/25 transition-colors duration-300" />
+                      <span className="absolute inset-0 flex items-center justify-center">
+                        <span className="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-[hsl(160_62%_26%)] group-hover/play:bg-[hsl(160_62%_30%)] group-hover/play:scale-105 transition-all duration-300 shadow-2xl">
+                          <Play className="w-7 h-7 md:w-8 md:h-8 text-white translate-x-0.5" fill="currentColor" />
+                        </span>
+                      </span>
+                    </button>
+                  )}
+
                   {/* Subtle corner ornaments */}
-                  <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-white/20" />
-                  <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-white/20" />
+                  <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-white/20 pointer-events-none" />
+                  <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-white/20 pointer-events-none" />
                 </div>
               </div>
               
