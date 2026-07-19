@@ -31,6 +31,9 @@ const Index = () => {
           content="Building software that solves real business problems — SaaS platforms, business systems, and AI-powered products."
         />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://bysabbir.com" />
+        <meta property="og:site_name" content="Sabbir Ahmad" />
+        <meta property="og:image" content="https://pub-9d3effc166864bf2a230513269e822dc.r2.dev/about/img.webp" />
         <link rel="canonical" href="https://bysabbir.com" />
       </Helmet>
 

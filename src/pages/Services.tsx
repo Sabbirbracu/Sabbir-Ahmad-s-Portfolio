@@ -336,6 +336,8 @@ const Services = () => {
       <Helmet>
         <title>Services | Sabbir - Full-Stack Developer | Transform Your Ideas Into Reality</title>
         <meta name="description" content="Professional web development services: full-stack applications, business websites, e-commerce, AI integration. 50+ projects delivered, 98% satisfaction rate. Book free consultation." />
+        <meta property="og:site_name" content="Sabbir Ahmad" />
+        <link rel="canonical" href="https://bysabbir.com/services" />
       </Helmet>
       
       <Navbar />

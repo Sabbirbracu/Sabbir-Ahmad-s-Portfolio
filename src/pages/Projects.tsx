@@ -17,6 +17,8 @@ const Projects = () => {
           name="description"
           content="Shipped, verifiable work by Sabbir Ahmad — full-stack products in production, with live links and full case studies."
         />
+        <meta property="og:site_name" content="Sabbir Ahmad" />
+        <link rel="canonical" href="https://bysabbir.com/projects" />
       </Helmet>
 
       <Navbar />
