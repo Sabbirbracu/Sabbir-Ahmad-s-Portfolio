@@ -33,54 +33,11 @@ export interface ResetPasswordRequest {
   password: string;
 }
 
-// Project types
-export interface Project {
-  id?: string;
-  slug: string;
-  title: string;
-  description: string;
-  type: string;
-  tagline?: string;
-  status?: string;
-  year?: number;
-  duration?: string;
-  visibility?: string;
-  featured?: boolean;
-  media?: {
-    banner?: string;
-    gallery?: string[];
-  };
-  links?: {
-    live?: string;
-    github?: string;
-  };
-  techStack?: {
-    frontend?: string[];
-    backend?: string[];
-    database?: string[];
-    aiMl?: string[];
-    devops?: string[];
-    tools?: string[];
-  };
-  summaryMetrics?: {
-    users?: string;
-    scale?: string;
-    performance?: string;
-    impact?: string;
-  };
-  caseStudy?: {
-    role?: string;
-    problem?: string;
-    solution?: string;
-    features?: string[];
-    challenges?: Array<{ problem: string; solution: string }>;
-    outcome?: string;
-  };
-  meta?: {
-    keywords?: string[];
-    ogImage?: string;
-  };
-}
+// Project types — single source of truth lives in @/types/project.
+// Re-exported so existing `import { Project } from "@/store/api/apiSlice"`
+// call sites keep working.
+import type { Project } from "@/types/project";
+export type { Project };
 
 // Article types
 export interface Article {
@@ -164,10 +121,12 @@ export const apiSlice = createApi({
 
     // ========== Projects endpoints ==========
     getProjects: builder.query<Project[], { type?: string; featured?: boolean } | void>({
-      query: (params) => {
+      query: (arg) => {
+        // arg is `void` when the hook is called with no parameters
+        const params = (arg ?? {}) as { type?: string; featured?: boolean };
         const queryParams = new URLSearchParams();
-        if (params?.type) queryParams.append("type", params.type);
-        if (params?.featured !== undefined) queryParams.append("featured", String(params.featured));
+        if (params.type) queryParams.append("type", params.type);
+        if (params.featured !== undefined) queryParams.append("featured", String(params.featured));
         return `/projects${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
       },
       transformResponse: (response: any) => {

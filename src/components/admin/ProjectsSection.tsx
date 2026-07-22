@@ -86,8 +86,8 @@ const ProjectsSection = () => {
     },
   });
 
-  // Transform API data
-  const projects = apiProjects?.data || [];
+  // getProjects already unwraps the API envelope to a Project[]
+  const projects = apiProjects ?? [];
 
   useEffect(() => {
     if (error) {

@@ -39,6 +39,8 @@ export interface ProjectMedia {
 
 export interface ProjectLinks {
   live?: string;
+  /** Client's own production site, when it differs from the delivered build */
+  clientSite?: string;
   github?: string;
   documentation?: string;
   researchPaper?: string;
@@ -77,6 +79,51 @@ export interface CaseStudyChallenge {
   solution: string;
 }
 
+// ============================================
+// In-depth case-study building blocks
+// ============================================
+export interface CaseStudyBlock {
+  intro?: string;
+  points?: string[];
+}
+
+export interface CaseStudyMetric {
+  value: string;
+  label: string;
+}
+
+export interface CaseStudyStep {
+  title: string;
+  body: string;
+}
+
+export interface CaseStudyComponent {
+  name: string;
+  detail: string;
+}
+
+export interface CaseStudyNote {
+  title: string;
+  body: string[];
+}
+
+export interface CaseStudyDeepDive {
+  title: string;
+  paragraphs: string[];
+}
+
+export interface CaseStudyTradeoff {
+  decision: string;
+  alternative: string;
+  rationale: string;
+}
+
+export interface CaseStudyResults {
+  metrics?: { label: string; value: string }[];
+  modulesNote?: string;
+  businessImpact?: string[];
+}
+
 export interface CaseStudy {
   role?: string;
   teamSize?: number;
@@ -96,6 +143,41 @@ export interface CaseStudy {
   outcome?: string;
 
   learnings?: string[];   // Strong for AI / research projects
+
+  // ---- In-depth blocks (optional; render only if present) ----
+  /** Explains a delivered-build URL vs the client's production URL */
+  showcaseNote?: string;
+
+  executiveSummary?: CaseStudyBlock;
+  keyMetrics?: CaseStudyMetric[];
+
+  context?: string[];
+
+  challengeIntro?: string;
+  challengePoints?: string[];
+
+  constraints?: string[];
+
+  approachIntro?: string;
+  approachSteps?: CaseStudyStep[];
+  approachOutro?: string;
+
+  architectureIntro?: string;
+  architectureComponents?: CaseStudyComponent[];
+  architectureOutro?: string;
+  architectureNotes?: CaseStudyNote[];
+
+  deepDives?: CaseStudyDeepDive[];
+
+  tradeoffs?: CaseStudyTradeoff[];
+
+  security?: CaseStudyBlock;
+  deployment?: CaseStudyBlock;
+
+  results?: CaseStudyResults;
+
+  improvements?: string[];
+  reflection?: string[];
 }
 
 // ============================================
