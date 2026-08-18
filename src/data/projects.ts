@@ -1,6 +1,17 @@
 import { Project } from "../types/project";
 
 /**
+ * Project slugs to hide from the site regardless of what the API returns.
+ * The projects listing filters these out and the detail route 404s them, so a
+ * project can be pulled from public view with a frontend deploy alone (the
+ * backend may still hold the record). Remove a slug here to un-hide it.
+ */
+export const HIDDEN_PROJECT_SLUGS = ["bhashal"];
+
+export const isHiddenProject = (slug?: string | null): boolean =>
+  !!slug && HIDDEN_PROJECT_SLUGS.includes(slug);
+
+/**
  * Every project listed here is real, verifiable work.
  * Live links resolve, repos exist, screenshots are from the
  * actual products. Credibility is the brand.

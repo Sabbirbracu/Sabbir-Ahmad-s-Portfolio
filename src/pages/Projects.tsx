@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { isHiddenProject } from "@/data/projects";
 import { useGetProjectsQuery } from "@/store/api/apiSlice";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
@@ -7,7 +8,9 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 
 const Projects = () => {
-  const { data: projects = [], isLoading } = useGetProjectsQuery();
+  const { data: rawProjects = [], isLoading } = useGetProjectsQuery();
+  // Drop any hidden projects before they reach the UI or the project count.
+  const projects = rawProjects.filter((p) => !isHiddenProject(p.slug));
 
   return (
     <div className="min-h-screen bg-background">
@@ -18,7 +21,7 @@ const Projects = () => {
           content="Shipped, verifiable work by Sabbir Ahmad — full-stack products in production, with live links and full case studies."
         />
         <meta property="og:site_name" content="Sabbir Ahmad" />
-        <link rel="canonical" href="https://bysabbir.com/projects" />
+        <link rel="canonical" href="https://www.bysabbir.com/projects" />
       </Helmet>
 
       <Navbar />

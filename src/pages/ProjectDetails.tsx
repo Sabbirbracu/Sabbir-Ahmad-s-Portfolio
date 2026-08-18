@@ -1,6 +1,7 @@
 import { ArrowUpRight, Check, ExternalLink, Github, Clock, Users, Briefcase, Target } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useGetProjectBySlugQuery } from "@/store/api/apiSlice";
+import { isHiddenProject } from "@/data/projects";
 import { getStatusLabel, getTypeLabel, hasCaseStudy } from "../types/project";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
@@ -90,9 +91,22 @@ const NumberedList = ({ items }: { items: string[] }) => (
 
 const ProjectDetails = () => {
   const { slug } = useParams<{ slug: string }>();
+  const hidden = isHiddenProject(slug);
   const { data: project, isLoading, isError } = useGetProjectBySlugQuery(slug ?? "", {
-    skip: !slug,
+    skip: !slug || hidden,
   });
+
+  if (hidden) {
+    return (
+      <div className="section-container py-24">
+        <h2 className="text-2xl font-bold mb-4">Project not found</h2>
+        <p className="text-muted-foreground">Could not locate the requested project.</p>
+        <Link to="/projects" className="mt-6 inline-block text-primary underline">
+          Back to projects
+        </Link>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

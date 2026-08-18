@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Puppeteer's project-local Chromium download (see .puppeteerrc.cjs)
+.cache
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
