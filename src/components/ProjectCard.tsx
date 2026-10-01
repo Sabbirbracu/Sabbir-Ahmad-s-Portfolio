@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, ExternalLink, Github, Layers, Zap } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Project, getTypeLabel } from "../types/project";
 
 // Re-export Project type for backward compatibility
@@ -67,7 +67,7 @@ const ProjectCard = ({ project, index = 0 }: ProjectCardProps) => {
               isInternalLink(liveLink) ? (
                 <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                   <Link
-                    to={liveLink}
+                    href={liveLink}
                     className="w-7 h-7 rounded-md bg-background/80 backdrop-blur-md flex items-center justify-center text-foreground border border-border/50 hover:border-primary hover:text-primary transition-all shadow-sm"
                   >
                     <ExternalLink className="w-3 h-3" />
@@ -90,7 +90,7 @@ const ProjectCard = ({ project, index = 0 }: ProjectCardProps) => {
               isInternalLink(githubLink) ? (
                 <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                   <Link
-                    to={githubLink}
+                    href={githubLink}
                     className="w-7 h-7 rounded-md bg-background/80 backdrop-blur-md flex items-center justify-center text-foreground border border-border/50 hover:border-primary hover:text-primary transition-all shadow-sm"
                   >
                     <Github className="w-3 h-3" />
@@ -140,7 +140,7 @@ const ProjectCard = ({ project, index = 0 }: ProjectCardProps) => {
 
           <div className="flex items-center justify-between pt-2 border-t border-border/30">
             <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{getTypeLabel(project.type)}</span>
-            <Link to={`/projects/${project.slug}`}>
+            <Link href={`/projects/${project.slug}`}>
               <motion.button whileHover={{ x: 3 }} className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors">
                 <span>View</span>
                 <ArrowUpRight className="w-3 h-3" />

@@ -1,73 +1,48 @@
-# Welcome to your Lovable project
+# Sabbir Ahmad — Portfolio
 
-## Project info
+Next.js portfolio site for Sabbir Ahmad, with a public portfolio, project case studies, articles, and an admin area.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Stack
 
-## How can I edit this code?
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- Redux Toolkit Query
+- Radix UI / shadcn-style components
 
-There are several ways of editing your application.
+## Local development
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Set the backend API in `.env.local`:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```env
+NEXT_PUBLIC_API_BASE_URL=https://your-backend.example.com/api
+```
 
-**Use GitHub Codespaces**
+## Production
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+npm run build
+npm run start
+```
 
-## What technologies are used for this project?
+The same `NEXT_PUBLIC_API_BASE_URL` variable must be configured in the deployment environment.
 
-This project is built with:
+## Project structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```text
+src/
+  app/          Next.js routes and root providers
+  components/   Reusable UI and page sections
+  data/         Static portfolio content
+  hooks/        Shared React hooks
+  lib/          Shared utilities
+  store/        Redux store and API services
+  types/        Shared TypeScript types
+public/         Static assets
+```

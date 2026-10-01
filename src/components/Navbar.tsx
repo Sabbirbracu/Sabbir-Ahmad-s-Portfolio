@@ -17,7 +17,8 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
   { index: "02", label: "Work", href: "/#work", isRoute: false },
@@ -40,7 +41,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,7 +56,7 @@ const Navbar = () => {
 
     if (!isRoute && href.startsWith("/#")) {
       const hash = href.substring(1);
-      if (location.pathname === "/") {
+      if (pathname === "/") {
         const element = document.querySelector(hash);
         if (element) {
           element.scrollIntoView({ behavior: "smooth" });
@@ -73,7 +74,7 @@ const Navbar = () => {
       <nav className="section-container flex items-center justify-between h-16 md:h-20">
         {/* Wordmark */}
         <Link
-          to="/"
+          href="/"
           className="font-heading text-xl md:text-2xl font-semibold tracking-tight text-foreground"
         >
           Sabbir Ahmad<span className="text-primary">.</span>
@@ -95,7 +96,7 @@ const Navbar = () => {
                   {serviceLinks.map((service) => (
                     <DropdownMenuItem key={service.label} asChild>
                       <Link
-                        to={service.href}
+                        href={service.href}
                         onClick={() => handleNavClick(service.href, false)}
                         className="cursor-pointer font-mono text-xs tracking-wider"
                       >
@@ -108,7 +109,7 @@ const Navbar = () => {
             ) : (
               <Link
                 key={link.label}
-                to={link.href}
+                href={link.href}
                 onClick={() => handleNavClick(link.href, link.isRoute)}
                 className="group font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors"
               >
@@ -185,7 +186,7 @@ const Navbar = () => {
                       {serviceLinks.map((service) => (
                         <Link
                           key={service.label}
-                          to={service.href}
+                          href={service.href}
                           onClick={() => handleNavClick(service.href, false)}
                           className="block font-mono text-xs tracking-wider text-muted-foreground hover:text-primary transition-colors"
                         >
@@ -197,7 +198,7 @@ const Navbar = () => {
                 ) : (
                   <Link
                     key={link.label}
-                    to={link.href}
+                    href={link.href}
                     onClick={() => handleNavClick(link.href, link.isRoute)}
                     className="block font-mono text-sm tracking-[0.15em] uppercase text-foreground hover:text-primary transition-colors"
                   >

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Calendar, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { articles } from "@/data/articles";
 
 const KnowledgeSection = () => {
@@ -43,7 +43,7 @@ const KnowledgeSection = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group relative"
             >
-              <Link to={`/article/${article.id}`} className="block">
+              <Link href={`/article/${article.id}`} className="block">
                 <div className="relative bg-card border border-border/50 rounded-2xl overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--primary-rgb),0.15)]">
                   {/* Image Container */}
                   <div className="relative h-52 overflow-hidden">

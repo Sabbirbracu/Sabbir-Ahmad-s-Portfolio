@@ -123,7 +123,7 @@ const CTASection = () => {
         url={CALENDLY_URL}
         onModalClose={() => setIsCalendlyOpen(false)}
         open={isCalendlyOpen}
-        rootElement={document.getElementById("root") as HTMLElement}
+        rootElement={typeof document !== "undefined" ? document.body : (undefined as unknown as HTMLElement)}
         prefill={{ name: "", email: "" }}
         pageSettings={{
           backgroundColor: "f7f8f2",

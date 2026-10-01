@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -23,7 +23,7 @@ const Footer = () => {
           <div className="col-span-6 md:col-span-3">
             <p className="font-mono text-[10px] tracking-[0.15em] uppercase text-[hsl(160_62%_40%)] mb-4 font-semibold">Navigate</p>
             <div className="flex flex-col gap-3 text-sm">
-              <Link to="/projects" className="text-white/80 hover:text-[hsl(160_62%_40%)] transition-colors">
+              <Link href="/projects" className="text-white/80 hover:text-[hsl(160_62%_40%)] transition-colors">
                 All Projects
               </Link>
               <a href="/#experience" className="text-white/80 hover:text-[hsl(160_62%_40%)] transition-colors">
@@ -80,7 +80,7 @@ const Footer = () => {
             Designed &amp; built by me — of course.
           </p>
           <Link
-            to="/admin/login"
+            href="/admin/login"
             className="font-mono text-xs text-white/40 hover:text-white/60 transition-colors"
           >
             Admin

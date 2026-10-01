@@ -1,7 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// API Base URL - change this to your production URL when deploying
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const configuredApiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+
+if (!configuredApiBaseUrl) {
+  throw new Error("Missing NEXT_PUBLIC_API_BASE_URL. Add it to your environment file before starting the app.");
+}
+
+// Keep endpoint paths consistent even if an environment value has a trailing slash.
+export const API_BASE_URL = configuredApiBaseUrl.replace(/\/+$/, "");
 
 // Define types for auth
 export interface LoginCredentials {

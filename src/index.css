@@ -1,5 +1,4 @@
-/* Fonts are loaded via <link> in index.html (see the <head>) to avoid the
-   render-blocking @import request chain. */
+/* Fonts are loaded once from the Next.js root layout. */
 
 @tailwind base;
 @tailwind components;

@@ -13,9 +13,9 @@ interface AuthState {
   isAuthenticated: boolean;
 }
 
-// Initialize state from localStorage
-const token = localStorage.getItem("adminToken");
-const userStr = localStorage.getItem("adminUser");
+// Initialize state from localStorage when running in the browser.
+const token = typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
+const userStr = typeof window !== "undefined" ? localStorage.getItem("adminUser") : null;
 const user = userStr ? JSON.parse(userStr) : null;
 
 const initialState: AuthState = {

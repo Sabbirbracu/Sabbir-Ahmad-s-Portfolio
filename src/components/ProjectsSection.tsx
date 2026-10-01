@@ -2,7 +2,7 @@ import { Project } from "@/types/project";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import projects from "@/data/projects";
 
 /* Client-facing selection, in pitch order */
@@ -234,7 +234,7 @@ const ProjectsSection = () => {
               >
                 {/* Showcase */}
                 <Link
-                  to={`/projects/${project.slug}`}
+                  href={`/projects/${project.slug}`}
                   className={`md:col-span-7 ${flipped ? "md:order-2" : ""}`}
                 >
                   <ProjectShowcase project={project} index={index} />
@@ -250,7 +250,7 @@ const ProjectsSection = () => {
                   </p>
 
                   <Link
-                    to={`/projects/${project.slug}`}
+                    href={`/projects/${project.slug}`}
                     className="group inline-flex items-center gap-2 mt-3"
                   >
                     <h3 className="font-heading text-3xl md:text-4xl font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
@@ -298,7 +298,7 @@ const ProjectsSection = () => {
                   {/* Actions */}
                   <div className="mt-8 flex items-center gap-4">
                     <Link
-                      to={`/projects/${project.slug}`}
+                      href={`/projects/${project.slug}`}
                       className="group inline-flex items-center gap-2 bg-primary text-primary-foreground hover:bg-foreground hover:scale-105 h-12 px-6 font-mono text-xs tracking-[0.15em] uppercase font-bold transition-all duration-300 shadow-lg hover:shadow-2xl"
                     >
                       Case Study
@@ -324,7 +324,7 @@ const ProjectsSection = () => {
         {/* View all + GitHub */}
         <div className="mt-20 md:mt-24 rule pt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            to="/projects"
+            href="/projects"
             className="group inline-flex items-center gap-3 bg-primary text-primary-foreground hover:bg-foreground hover:scale-105 h-14 px-10 font-mono text-sm tracking-[0.15em] uppercase font-bold transition-all duration-300 shadow-lg hover:shadow-2xl"
           >
             View All Projects
