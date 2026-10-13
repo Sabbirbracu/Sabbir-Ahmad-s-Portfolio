@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useAppDispatch } from "@/store/hooks";
+import { useVerifyTokenQuery } from "@/store/api/apiSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/store/slices/authSlice";
 import { motion } from "framer-motion";
 import {
@@ -59,6 +60,24 @@ const Dashboard = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
+  // Auth guard: no token -> login. Token present -> confirm it with the server so an expired or
+  // revoked session is sent back to login instead of showing a dashboard whose requests all fail.
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const [mounted, setMounted] = useState(false);
+  const { error: verifyError } = useVerifyTokenQuery(undefined, { skip: !isAuthenticated });
+
+  useEffect(() => {
+    setMounted(true);
+    if (!isAuthenticated) router.replace("/admin/login");
+  }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    if (verifyError && "status" in verifyError && verifyError.status === 401) {
+      dispatch(logout());
+      router.replace("/admin/login");
+    }
+  }, [verifyError, dispatch, router]);
+
   // Sync activeTab with URL parameter
   useEffect(() => {
     const tab = searchParams.get("tab") as TabType;
@@ -98,6 +117,9 @@ const Dashboard = () => {
         return <OverviewContent />;
     }
   };
+
+  // Render nothing until mounted: auth state comes from localStorage, which the server render can't see.
+  if (!mounted || !isAuthenticated) return <div className="min-h-screen bg-background" />;
 
   return (
     <div className="min-h-screen bg-background flex">

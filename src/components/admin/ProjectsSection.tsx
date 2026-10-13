@@ -1,218 +1,355 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+"use client";
+
 import {
-  Plus,
-  Search,
-  MoreVertical,
-  Edit,
-  Trash2,
-  ExternalLink,
-  Github,
-  FolderOpen,
-  Loader2,
-} from "lucide-react";
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import {
-  useGetProjectsQuery,
-  useCreateProjectMutation,
-  useUpdateProjectMutation,
-  useDeleteProjectMutation,
   Project,
+  useDeleteProjectMutation,
+  useGetProjectsQuery,
+  useReorderProjectsMutation,
+  useUpdateProjectMutation,
 } from "@/store/api/apiSlice";
+import {
+  Check,
+  ChevronDown,
+  Edit,
+  ExternalLink,
+  FolderOpen,
+  Github,
+  GripVertical,
+  Home,
+  Loader2,
+  MoreVertical,
+  Plus,
+  Search,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import AiImportDialog from "./projects/AiImportDialog";
+import ProjectEditor, { emptyProject } from "./projects/ProjectEditor";
+import type { Draft } from "./projects/fields";
+
+type View =
+  | { kind: "list" }
+  | { kind: "editor"; mode: "create" | "edit"; initial: Draft; fromAi?: boolean; key: number };
+
+const STATUS_OPTIONS = [
+  { value: "live", label: "Live", hint: "Shows a red “Live” pill" },
+  { value: "in-progress", label: "In progress", hint: "Shows a “Now Building” pill" },
+  { value: "concept", label: "Concept", hint: "Not built yet" },
+  { value: "archived", label: "Archived", hint: "No longer maintained" },
+];
+
+const STATUS_STYLE: Record<string, string> = {
+  live: "bg-green-500/10 text-green-600",
+  "in-progress": "bg-yellow-500/10 text-yellow-600",
+  concept: "bg-gray-500/10 text-gray-500",
+  archived: "bg-gray-500/10 text-gray-500",
+};
+
+/* ------------------------------------------------------------------ */
+/* One draggable row                                                   */
+/* ------------------------------------------------------------------ */
+
+interface RowProps {
+  project: Project;
+  position: number; // 1-based serial in the saved order
+  dragDisabled: boolean;
+  homeBusy: boolean;
+  statusBusy: boolean;
+  deleting: boolean;
+  onEdit: () => void;
+  onDelete: () => void;
+  onToggleHome: (next: boolean) => void;
+  onChangeStatus: (next: string) => void;
+}
+
+const SortableProjectRow = ({
+  project,
+  position,
+  dragDisabled,
+  homeBusy,
+  statusBusy,
+  deleting,
+  onEdit,
+  onDelete,
+  onToggleHome,
+  onChangeStatus,
+}: RowProps) => {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
+    id: project.id,
+    disabled: dragDisabled,
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={isDragging ? "relative z-10" : "relative"}
+    >
+      <Card
+        className={`bg-card/50 border-border/50 transition-shadow ${
+          isDragging ? "shadow-xl ring-2 ring-primary/40 bg-card" : "hover:border-primary/30"
+        }`}
+      >
+        <CardContent className="flex items-center gap-2 sm:gap-3 p-3">
+          {/* Drag handle + serial number */}
+          <button
+            ref={setActivatorNodeRef}
+            type="button"
+            {...attributes}
+            {...listeners}
+            disabled={dragDisabled}
+            aria-label={`Drag to reorder ${project.title}`}
+            title={dragDisabled ? "Clear the search to reorder" : "Drag to reorder"}
+            className={`touch-none shrink-0 rounded p-1 text-muted-foreground ${
+              dragDisabled ? "opacity-30 cursor-not-allowed" : "cursor-grab active:cursor-grabbing hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <GripVertical className="w-5 h-5" />
+          </button>
+          <span className="w-7 shrink-0 text-center font-mono text-sm text-muted-foreground">{String(position).padStart(2, "0")}</span>
+
+          <div className="hidden sm:block w-24 aspect-video shrink-0 overflow-hidden rounded bg-muted">
+            <img src={project.media?.banner || project.media?.thumbnail || "/placeholder.svg"} alt="" className="h-full w-full object-cover" />
+          </div>
+
+          <div className="min-w-0 flex-1 space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="truncate font-medium">{project.title}</p>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild disabled={statusBusy}>
+                  <button type="button" aria-label={`Change status of ${project.title} (currently ${project.status})`} title="Click to change status">
+                    <Badge className={`cursor-pointer gap-1 text-[10px] ${STATUS_STYLE[project.status ?? ""] ?? ""}`}>
+                      {statusBusy ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                      {project.status}
+                      <ChevronDown className="w-3 h-3 opacity-60" />
+                    </Badge>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  {STATUS_OPTIONS.map((o) => (
+                    <DropdownMenuItem key={o.value} onClick={() => o.value !== project.status && onChangeStatus(o.value)}>
+                      <span className="flex flex-col">
+                        <span className="flex items-center gap-2">
+                          {o.label}
+                          {o.value === project.status && <Check className="w-3.5 h-3.5 text-primary" />}
+                        </span>
+                        <span className="text-xs text-muted-foreground">{o.hint}</span>
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {project.visibility !== "public" && (
+                <Badge variant="secondary" className="text-[10px] uppercase">
+                  {project.visibility}
+                </Badge>
+              )}
+            </div>
+            <p className="truncate text-xs text-muted-foreground">
+              /{project.slug} · {project.type}
+              {project.year ? ` · ${project.year}` : ""}
+            </p>
+          </div>
+
+          {/* Show on homepage */}
+          <label className="hidden md:flex shrink-0 items-center gap-2 text-xs text-muted-foreground" title="Show in the homepage Selected Work section">
+            <Home className="w-3.5 h-3.5" />
+            Home
+            <Switch
+              checked={!!project.meta?.featured}
+              disabled={homeBusy}
+              onCheckedChange={onToggleHome}
+              aria-label={`Show ${project.title} on the homepage`}
+            />
+          </label>
+
+          <div className="flex shrink-0 items-center gap-1">
+            <Button size="sm" variant="outline" className="gap-1.5" onClick={onEdit}>
+              <Edit className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Edit</span>
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="More actions">
+                  <MoreVertical className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <a href={`/projects/${project.slug}`} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-4 h-4 mr-2" /> View on site
+                  </a>
+                </DropdownMenuItem>
+                {project.links?.github && (
+                  <DropdownMenuItem asChild>
+                    <a href={project.links.github} target="_blank" rel="noopener noreferrer">
+                      <Github className="w-4 h-4 mr-2" /> GitHub
+                    </a>
+                  </DropdownMenuItem>
+                )}
+                {/* The switch above is hidden on small screens; keep the action reachable here. */}
+                <DropdownMenuItem className="md:hidden" onClick={() => onToggleHome(!project.meta?.featured)}>
+                  <Home className="w-4 h-4 mr-2" /> {project.meta?.featured ? "Remove from homepage" : "Show on homepage"}
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive" disabled={deleting} onClick={onDelete}>
+                  <Trash2 className="w-4 h-4 mr-2" /> Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Section                                                             */
+/* ------------------------------------------------------------------ */
 
 const ProjectsSection = () => {
   const { toast } = useToast();
-  const { data: apiProjects, isLoading, error, refetch } = useGetProjectsQuery();
-  const [createProject, { isLoading: isCreating }] = useCreateProjectMutation();
-  const [updateProject, { isLoading: isUpdating }] = useUpdateProjectMutation();
+  // includeHidden lets the admin see (and edit) private projects the public site never receives.
+  const { data: projects = [], isLoading, error } = useGetProjectsQuery({ includeHidden: true }, { refetchOnMountOrArgChange: true });
   const [deleteProject, { isLoading: isDeleting }] = useDeleteProjectMutation();
+  const [updateProject] = useUpdateProjectMutation();
+  const [reorderProjects, { isLoading: isReordering }] = useReorderProjectsMutation();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const [newProject, setNewProject] = useState({
-    title: "",
-    slug: "",
-    tagline: "",
-    description: "",
-    type: "fullstack" as const,
-    status: "in-progress" as const,
-    year: new Date().getFullYear(),
-    duration: "",
-    visibility: "public" as const,
-    featured: false,
-    media: {
-      banner: "",
-      gallery: [] as string[],
-    },
-    links: {
-      live: "",
-      github: "",
-    },
-    techStack: {
-      primary: [] as string[],
-      frontend: [] as string[],
-      backend: [] as string[],
-      database: [] as string[],
-    },
-  });
+  const [view, setView] = useState<View>({ kind: "list" });
+  const [aiOpen, setAiOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [homeBusyId, setHomeBusyId] = useState<string | null>(null);
+  const [statusBusyId, setStatusBusyId] = useState<string | null>(null);
 
-  // getProjects already unwraps the API envelope to a Project[]
-  const projects = apiProjects ?? [];
+  // Local order of ids: updated instantly on drop, then saved; otherwise follows the server.
+  // The sync effect depends ONLY on the server's order, and is skipped while a save is in flight, so
+  // neither a rollback nor an in-progress save can be overwritten by stale server data.
+  const [order, setOrder] = useState<string[]>([]);
+  const savesInFlight = useRef(0);
+  const serverOrderKey = projects.map((p) => p.id).join();
+  useEffect(() => {
+    if (savesInFlight.current === 0) setOrder(serverOrderKey ? serverOrderKey.split(",") : []);
+  }, [serverOrderKey]);
+
+  const byId = useMemo(() => new Map(projects.map((p) => [p.id, p])), [projects]);
+  const ordered = useMemo(() => order.map((id) => byId.get(id)).filter((p): p is Project => !!p), [order, byId]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   useEffect(() => {
     if (error) {
       toast({
-        title: "Error",
-        description: "Failed to fetch projects. Make sure your backend is running.",
+        title: "Couldn't load projects",
+        description: "Make sure the backend is reachable and you're logged in.",
         variant: "destructive",
       });
     }
   }, [error, toast]);
 
-  const filteredProjects = projects.filter(
-    (project: any) =>
-      project.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.slug?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.techStack?.primary?.some((t: string) =>
-        t.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-  );
+  // `key` forces a fresh editor (and fresh form state) every time one is opened.
+  const openEditor = (mode: "create" | "edit", initial: Draft, fromAi = false) =>
+    setView({ kind: "editor", mode, initial, fromAi, key: Date.now() });
 
-  const handleCreateProject = async () => {
+  const handleDragEnd = async ({ active, over }: DragEndEvent) => {
+    if (!over || active.id === over.id) return;
+    const previous = order;
+    const next = arrayMove(order, order.indexOf(String(active.id)), order.indexOf(String(over.id)));
+    setOrder(next); // optimistic
+    savesInFlight.current += 1;
     try {
-      const projectData = {
-        ...newProject,
-        techStack: {
-          primary: newProject.techStack.primary.filter(t => t.trim()),
-          frontend: newProject.techStack.frontend.filter(t => t.trim()),
-          backend: newProject.techStack.backend.filter(t => t.trim()),
-          database: newProject.techStack.database.filter(t => t.trim()),
-        },
-      };
-
-      await createProject(projectData).unwrap();
-      
-      toast({
-        title: "Success",
-        description: "Project created successfully!",
-      });
-      
-      setNewProject({
-        title: "",
-        slug: "",
-        tagline: "",
-        description: "",
-        type: "fullstack",
-        status: "in-progress",
-        year: new Date().getFullYear(),
-        duration: "",
-        visibility: "public",
-        featured: false,
-        media: { banner: "", gallery: [] },
-        links: { live: "", github: "" },
-        techStack: { primary: [], frontend: [], backend: [], database: [] },
-      });
-      setIsCreateOpen(false);
-      refetch();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error?.data?.message || "Failed to create project",
-        variant: "destructive",
-      });
+      await reorderProjects(next).unwrap();
+    } catch (err) {
+      setOrder(previous);
+      const message = (err as { data?: { message?: string } })?.data?.message || "Failed to save the new order";
+      toast({ title: "Order not saved", description: message, variant: "destructive" });
+    } finally {
+      savesInFlight.current -= 1;
     }
   };
 
-  const handleUpdateProject = async () => {
-    if (!editingProject || !editingProject.id) return;
-    
+  const handleToggleHome = async (project: Project, featured: boolean) => {
+    setHomeBusyId(project.id);
     try {
-      await updateProject({
-        id: editingProject.id,
-        data: editingProject,
-      }).unwrap();
-      
-      toast({
-        title: "Success",
-        description: "Project updated successfully!",
-      });
-      
-      setEditingProject(null);
-      refetch();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error?.data?.message || "Failed to update project",
-        variant: "destructive",
-      });
+      // Dotted path updates only this one field instead of replacing the whole meta object.
+      await updateProject({ id: project.id, data: { "meta.featured": featured } as unknown as Partial<Project> }).unwrap();
+      toast({ title: featured ? "Added to homepage" : "Removed from homepage", description: project.title });
+    } catch (err) {
+      const message = (err as { data?: { message?: string } })?.data?.message || "Failed to update";
+      toast({ title: "Error", description: message, variant: "destructive" });
+    } finally {
+      setHomeBusyId(null);
     }
   };
 
-  const handleDeleteProject = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this project?")) return;
-    
+  const handleChangeStatus = async (project: Project, status: string) => {
+    setStatusBusyId(project.id);
     try {
-      await deleteProject(id).unwrap();
-      
-      toast({
-        title: "Success",
-        description: "Project deleted successfully!",
-      });
-      
-      refetch();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error?.data?.message || "Failed to delete project",
-        variant: "destructive",
-      });
+      await updateProject({ id: project.id, data: { status } as Partial<Project> }).unwrap();
+      toast({ title: "Status updated", description: `${project.title} → ${status}` });
+    } catch (err) {
+      const message = (err as { data?: { message?: string } })?.data?.message || "Failed to update status";
+      toast({ title: "Error", description: message, variant: "destructive" });
+    } finally {
+      setStatusBusyId(null);
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "live":
-      case "completed":
-        return "bg-green-500/10 text-green-500";
-      case "in-progress":
-        return "bg-yellow-500/10 text-yellow-500";
-      case "archived":
-      case "concept":
-        return "bg-gray-500/10 text-gray-500";
-      default:
-        return "";
+  const handleDelete = async (project: Project) => {
+    if (!confirm(`Delete “${project.title}”? This can't be undone.`)) return;
+    try {
+      await deleteProject(project.id).unwrap();
+      toast({ title: "Project deleted" });
+    } catch (err) {
+      const message = (err as { data?: { message?: string } })?.data?.message || "Failed to delete project";
+      toast({ title: "Error", description: message, variant: "destructive" });
     }
   };
+
+  if (view.kind === "editor") {
+    return (
+      <ProjectEditor
+        key={view.key}
+        mode={view.mode}
+        initial={view.initial}
+        fromAi={view.fromAi}
+        onCancel={() => setView({ kind: "list" })}
+        onSaved={() => setView({ kind: "list" })}
+      />
+    );
+  }
 
   if (isLoading) {
     return (
@@ -222,330 +359,83 @@ const ProjectsSection = () => {
     );
   }
 
+  const q = search.trim().toLowerCase();
+  const visible = ordered.filter(
+    (p) =>
+      !q ||
+      p.title?.toLowerCase().includes(q) ||
+      p.slug?.toLowerCase().includes(q) ||
+      p.techStack?.primary?.some((t) => t.toLowerCase().includes(q)),
+  );
+  const dragDisabled = q.length > 0;
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="relative w-full sm:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search projects..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="w-4 h-4" />
-              Add Project
+    <>
+      <div className="space-y-5">
+        <div className="flex flex-col sm:flex-row gap-3 justify-between">
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input placeholder="Search projects…" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" className="gap-2" onClick={() => setAiOpen(true)}>
+              <Sparkles className="w-4 h-4" /> Import with AI
             </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Add New Project</DialogTitle>
-              <DialogDescription>
-                Add a new project to your portfolio.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Project Title *</Label>
-                  <Input
-                    placeholder="e.g., E-Commerce Platform"
-                    value={newProject.title}
-                    onChange={(e) =>
-                      setNewProject({ ...newProject, title: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Slug *</Label>
-                  <Input
-                    placeholder="e.g., ecommerce-platform"
-                    value={newProject.slug}
-                    onChange={(e) =>
-                      setNewProject({ ...newProject, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })
-                    }
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Tagline</Label>
-                <Input
-                  placeholder="Short catchy description"
-                  value={newProject.tagline}
-                  onChange={(e) =>
-                    setNewProject({ ...newProject, tagline: e.target.value })
-                  }
+            <Button className="gap-2" onClick={() => openEditor("create", emptyProject())}>
+              <Plus className="w-4 h-4" /> Add project
+            </Button>
+          </div>
+        </div>
+
+        <p className="text-sm text-muted-foreground">
+          {projects.length} {projects.length === 1 ? "project" : "projects"} ·{" "}
+          {dragDisabled
+            ? "Clear the search to reorder."
+            : "Drag the handle to reorder. This order is used on the homepage and the All Projects page; the Home switch picks what appears on the homepage."}
+          {isReordering && <span className="ml-2 inline-flex items-center gap-1 text-xs"><Loader2 className="w-3 h-3 animate-spin" /> Saving…</span>}
+        </p>
+
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={visible.map((p) => p.id)} strategy={verticalListSortingStrategy}>
+            <div className="space-y-2">
+              {visible.map((project) => (
+                <SortableProjectRow
+                  key={project.id}
+                  project={project}
+                  position={order.indexOf(project.id) + 1}
+                  dragDisabled={dragDisabled}
+                  homeBusy={homeBusyId === project.id}
+                  statusBusy={statusBusyId === project.id}
+                  deleting={isDeleting}
+                  onEdit={() => openEditor("edit", project as unknown as Draft)}
+                  onDelete={() => handleDelete(project)}
+                  onToggleHome={(next) => handleToggleHome(project, next)}
+                  onChangeStatus={(next) => handleChangeStatus(project, next)}
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Description *</Label>
-                <Textarea
-                  placeholder="Describe your project in detail..."
-                  value={newProject.description}
-                  onChange={(e) =>
-                    setNewProject({ ...newProject, description: e.target.value })
-                  }
-                  rows={3}
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label>Type *</Label>
-                  <Select
-                    value={newProject.type}
-                    onValueChange={(value: any) =>
-                      setNewProject({ ...newProject, type: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="fullstack">Full Stack</SelectItem>
-                      <SelectItem value="frontend">Frontend</SelectItem>
-                      <SelectItem value="backend">Backend</SelectItem>
-                      <SelectItem value="mobile">Mobile</SelectItem>
-                      <SelectItem value="ai-ml">AI/ML</SelectItem>
-                      <SelectItem value="wordpress">WordPress</SelectItem>
-                      <SelectItem value="no-code">No-Code</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Status *</Label>
-                  <Select
-                    value={newProject.status}
-                    onValueChange={(value: any) =>
-                      setNewProject({ ...newProject, status: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="concept">Concept</SelectItem>
-                      <SelectItem value="in-progress">In Progress</SelectItem>
-                      <SelectItem value="live">Live</SelectItem>
-                      <SelectItem value="archived">Archived</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Year</Label>
-                  <Input
-                    type="number"
-                    placeholder="2024"
-                    value={newProject.year}
-                    onChange={(e) =>
-                      setNewProject({ ...newProject, year: parseInt(e.target.value) })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Banner Image URL</Label>
-                <Input
-                  placeholder="https://example.com/image.png"
-                  value={newProject.media.banner}
-                  onChange={(e) =>
-                    setNewProject({
-                      ...newProject,
-                      media: { ...newProject.media, banner: e.target.value },
-                    })
-                  }
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Live URL</Label>
-                  <Input
-                    placeholder="https://myproject.com"
-                    value={newProject.links.live}
-                    onChange={(e) =>
-                      setNewProject({
-                        ...newProject,
-                        links: { ...newProject.links, live: e.target.value },
-                      })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>GitHub URL</Label>
-                  <Input
-                    placeholder="https://github.com/..."
-                    value={newProject.links.github}
-                    onChange={(e) =>
-                      setNewProject({
-                        ...newProject,
-                        links: { ...newProject.links, github: e.target.value },
-                      })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Primary Tech Stack (comma-separated)</Label>
-                <Input
-                  placeholder="React, Node.js, MongoDB"
-                  value={newProject.techStack.primary.join(", ")}
-                  onChange={(e) =>
-                    setNewProject({
-                      ...newProject,
-                      techStack: {
-                        ...newProject.techStack,
-                        primary: e.target.value.split(",").map((t) => t.trim()),
-                      },
-                    })
-                  }
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Switch
-                  checked={newProject.featured}
-                  onCheckedChange={(checked) =>
-                    setNewProject({ ...newProject, featured: checked })
-                  }
-                />
-                <Label>Featured Project</Label>
-              </div>
+              ))}
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleCreateProject} disabled={isCreating}>
-                {isCreating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  "Add Project"
-                )}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          </SortableContext>
+        </DndContext>
+
+        {visible.length === 0 && (
+          <Card className="bg-card/50 border-border/50">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <FolderOpen className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">
+                {q ? "No projects match your search" : "No projects yet — add one manually or import it with AI."}
+              </p>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {filteredProjects.map((project: any, index: number) => (
-          <motion.div
-            key={project.id || project._id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-          >
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-colors overflow-hidden">
-              <div className="aspect-video bg-muted relative">
-                <img
-                  src={project.media?.banner || project.media?.thumbnail || "/placeholder.svg"}
-                  alt={project.title}
-                  className="w-full h-full object-cover"
-                />
-                {project.meta?.featured && (
-                  <Badge className="absolute top-2 left-2 bg-primary">
-                    Featured
-                  </Badge>
-                )}
-              </div>
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="text-base line-clamp-1">
-                      {project.title}
-                    </CardTitle>
-                    <Badge className={`text-xs ${getStatusColor(project.status)}`}>
-                      {project.status}
-                    </Badge>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreVertical className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      {project.links?.live && (
-                        <DropdownMenuItem asChild>
-                          <a href={project.links.live} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            View Live
-                          </a>
-                        </DropdownMenuItem>
-                      )}
-                      {project.links?.github && (
-                        <DropdownMenuItem asChild>
-                          <a href={project.links.github} target="_blank" rel="noopener noreferrer">
-                            <Github className="w-4 h-4 mr-2" />
-                            GitHub
-                          </a>
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuItem onClick={() => setEditingProject(project)}>
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-destructive"
-                        onClick={() => handleDeleteProject(project.id || project._id)}
-                        disabled={isDeleting}
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-1">
-                  {(project.techStack?.primary || []).slice(0, 4).map((tech: string) => (
-                    <Badge key={tech} variant="secondary" className="text-xs">
-                      {tech}
-                    </Badge>
-                  ))}
-                  {(project.techStack?.primary || []).length > 4 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{(project.techStack?.primary || []).length - 4}
-                    </Badge>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
-
-      {filteredProjects.length === 0 && (
-        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <FolderOpen className="w-12 h-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">
-              {searchQuery ? "No projects found matching your search" : "No projects yet. Add your first project!"}
-            </p>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+      <AiImportDialog open={aiOpen} onOpenChange={setAiOpen} onGenerated={(draft) => openEditor("create", draft, true)} />
+    </>
   );
 };
 

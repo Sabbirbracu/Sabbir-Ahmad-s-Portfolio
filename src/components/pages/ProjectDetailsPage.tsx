@@ -8,6 +8,8 @@ import { isHiddenProject } from "@/data/projects";
 import { getStatusLabel, getTypeLabel, hasCaseStudy } from "@/types/project";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
+import ProductTour, { hasTourImages } from "@/components/project/ProductTour";
+import WorkflowDiagram from "@/components/project/WorkflowDiagram";
 import type { ReactNode } from "react";
 
 /* ------------------------------------------------------------------ */
@@ -389,6 +391,24 @@ const ProjectDetails = () => {
         </Section>
       )}
 
+      {/* ------------------------------------------------------ Lifecycle */}
+      {caseStudy?.workflow?.stages && caseStudy.workflow.stages.length > 0 && (
+        <Section>
+          <SectionTitle lead="End-to-End" accent="Lifecycle" />
+          {caseStudy.workflow.intro && (
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-4xl mb-10">
+              {caseStudy.workflow.intro}
+            </p>
+          )}
+          <WorkflowDiagram stages={caseStudy.workflow.stages} />
+          {caseStudy.workflow.outro && (
+            <p className="mt-10 text-lg md:text-xl text-foreground font-medium leading-relaxed max-w-4xl">
+              {caseStudy.workflow.outro}
+            </p>
+          )}
+        </Section>
+      )}
+
       {/* ------------------------------------------------- The challenge */}
       {caseStudy?.challengePoints && caseStudy.challengePoints.length > 0 && (
         <Section>
@@ -451,6 +471,19 @@ const ProjectDetails = () => {
               {caseStudy.approachOutro}
             </p>
           )}
+        </Section>
+      )}
+
+      {/* ---------------------------------------------------- Product tour */}
+      {hasTourImages(caseStudy?.screens) && (
+        <Section tinted>
+          <SectionTitle lead="Product" accent="Tour" />
+          {caseStudy?.screensIntro && (
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-4xl mb-12 md:mb-16">
+              {caseStudy.screensIntro}
+            </p>
+          )}
+          <ProductTour screens={caseStudy!.screens!} />
         </Section>
       )}
 

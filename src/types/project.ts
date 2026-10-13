@@ -118,6 +118,30 @@ export interface CaseStudyTradeoff {
   rationale: string;
 }
 
+export interface CaseStudyWorkflowStage {
+  title: string;
+  detail: string;
+  /** Which track of the lifecycle the stage belongs to; sourcing stages must come before finance stages */
+  track?: "sourcing" | "finance";
+  /** AI assists at this stage */
+  ai?: boolean;
+  /** A person reviews or approves at this stage */
+  human?: boolean;
+}
+
+export interface CaseStudyWorkflow {
+  intro?: string;
+  stages?: CaseStudyWorkflowStage[];
+  outro?: string;
+}
+
+export interface CaseStudyScreen {
+  title: string;
+  caption?: string;
+  /** Screenshot URL; screens without one are not shown */
+  image?: string;
+}
+
 export interface CaseStudyResults {
   metrics?: { label: string; value: string }[];
   modulesNote?: string;
@@ -153,6 +177,13 @@ export interface CaseStudy {
 
   context?: string[];
 
+  /** End-to-end lifecycle diagram */
+  workflow?: CaseStudyWorkflow;
+
+  /** Captioned product-tour screenshots */
+  screensIntro?: string;
+  screens?: CaseStudyScreen[];
+
   challengeIntro?: string;
   challengePoints?: string[];
 
@@ -184,7 +215,10 @@ export interface CaseStudy {
 // Meta (Filtering, Admin, SEO)
 // ============================================
 export interface ProjectMeta {
+  /** Shown in the homepage "Selected Work" section */
   featured?: boolean;
+  /** Position within the homepage selection (ascending) */
+  order?: number;
   tags?: string[];
   company?: string;
   location?: string;

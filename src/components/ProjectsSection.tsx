@@ -3,16 +3,25 @@ import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import projects from "@/data/projects";
+import staticProjects, { isHiddenProject } from "@/data/projects";
+import { useGetProjectsQuery } from "@/store/api/apiSlice";
+import { Skeleton } from "@/components/ui/skeleton";
 
-/* Client-facing selection, in pitch order */
-const FEATURED_ORDER = ["rchms", "shaadimartbd", "ai-customer-support"];
+/* Only used if the API is unreachable, so the homepage never renders an empty showcase. */
+const FALLBACK_ORDER = ["rchms", "shaadimartbd", "ai-customer-support"];
+
+const SLIDER_MAX = 5;
 
 const collectImages = (p: Project): string[] => {
   const imgs: string[] = [];
-  if (p.media.banner) imgs.push(p.media.banner);
-  p.media.gallery?.forEach((g) => {
-    if (!imgs.includes(g)) imgs.push(g);
+  const add = (src?: string) => {
+    if (src && !imgs.includes(src)) imgs.push(src);
+  };
+  add(p.media.banner);
+  p.media.gallery?.forEach(add);
+  // Product-tour screenshots top the slider up (never past SLIDER_MAX), so a project that only has tour images still shows them.
+  p.caseStudy?.screens?.forEach((s) => {
+    if (imgs.length < SLIDER_MAX) add(s.image);
   });
   return imgs;
 };
@@ -145,13 +154,15 @@ const ProjectShowcase = ({
 };
 
 const ProjectsSection = () => {
-  const featuredProjects = useMemo(
-    () =>
-      FEATURED_ORDER.map((slug) => projects.find((p) => p.slug === slug)).filter(
-        Boolean,
-      ) as Project[],
-    [],
-  );
+  // Selection and order are managed from Admin → Projects → Homepage.
+  const { data, isLoading, isError } = useGetProjectsQuery({ featured: true });
+
+  const featuredProjects = useMemo(() => {
+    if (isError) {
+      return FALLBACK_ORDER.map((slug) => staticProjects.find((p) => p.slug === slug)).filter(Boolean) as Project[];
+    }
+    return (data ?? []).filter((p) => !isHiddenProject(p.slug));
+  }, [data, isError]);
 
   return (
     <section id="work" className="relative py-20 md:py-28 overflow-hidden">
@@ -221,6 +232,16 @@ const ProjectsSection = () => {
 
         {/* Alternating feature rows */}
         <div className="space-y-16 md:space-y-24">
+          {isLoading && (
+            <div className="grid md:grid-cols-12 gap-8 lg:gap-14 items-center">
+              <Skeleton className="md:col-span-7 aspect-[16/10]" />
+              <div className="md:col-span-5 space-y-4">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-10 w-3/4" />
+                <Skeleton className="h-24 w-full" />
+              </div>
+            </div>
+          )}
           {featuredProjects.map((project, index) => {
             const flipped = index % 2 === 1;
             return (

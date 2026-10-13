@@ -1,37 +1,42 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, Clock, Share2 } from "lucide-react";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useGetArticleBySlugQuery } from "@/store/api/apiSlice";
+import ArticleBody from "@/components/blog/ArticleBody";
+import ShareDialog from "@/components/blog/ShareDialog";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
+import { extractHeadings, stripLeadingTitle } from "@/lib/markdown";
+import { useGetArticleBySlugQuery, useGetArticlesQuery } from "@/store/api/apiSlice";
+import { motion } from "framer-motion";
+import { ArrowLeft, ArrowRight, Calendar, Clock, Share2 } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useState } from "react";
 
 const ArticlePage = () => {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
-  const { data: article, isLoading } = useGetArticleBySlugQuery(id ?? "", { skip: !id });
+  const [shareOpen, setShareOpen] = useState(false);
+  const { data: article, isLoading, isError } = useGetArticleBySlugQuery(id ?? "", { skip: !id });
+  const { data: allArticles = [] } = useGetArticlesQuery();
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="font-mono text-xs tracking-[0.18em] uppercase text-muted-foreground animate-pulse">
-          Loading article…
-        </p>
+        <p className="font-mono text-xs tracking-[0.18em] uppercase text-muted-foreground animate-pulse">Loading article…</p>
       </div>
     );
   }
 
-  if (!article) {
+  if (isError || !article) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center px-6">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">Article Not Found</h1>
           <p className="text-muted-foreground mb-8">The article you're looking for doesn't exist.</p>
-          <Link href="/">
+          <Link href="/#insights">
             <Button variant="outline" className="gap-2">
               <ArrowLeft className="w-4 h-4" />
-              Back to Home
+              Back to articles
             </Button>
           </Link>
         </div>
@@ -39,205 +44,151 @@ const ArticlePage = () => {
     );
   }
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: article.title,
-          text: article.description,
-            url: window.location.href,
-        });
-      } catch (err) {
-        console.log("Error sharing:", err);
-      }
-    }
-  };
-
-  // Simple markdown-like rendering
-  const renderContent = (content: string) => {
-    const lines = content.trim().split('\n');
-    const elements: JSX.Element[] = [];
-    let inCodeBlock = false;
-    let codeContent = '';
-    let codeLanguage = '';
-
-    lines.forEach((line, index) => {
-      // Code block handling
-      if (line.startsWith('```')) {
-        if (!inCodeBlock) {
-          inCodeBlock = true;
-          codeLanguage = line.slice(3).trim();
-          codeContent = '';
-        } else {
-          elements.push(
-            <pre key={index} className="bg-muted/50 border border-border rounded-lg p-4 overflow-x-auto my-6">
-              <code className="text-sm font-mono text-foreground">{codeContent.trim()}</code>
-            </pre>
-          );
-          inCodeBlock = false;
-        }
-        return;
-      }
-
-      if (inCodeBlock) {
-        codeContent += line + '\n';
-        return;
-      }
-
-      // Headers
-      if (line.startsWith('# ')) {
-        elements.push(
-          <h1 key={index} className="text-3xl md:text-4xl font-bold font-heading mt-8 mb-6 text-foreground">
-            {line.slice(2)}
-          </h1>
-        );
-      } else if (line.startsWith('## ')) {
-        elements.push(
-          <h2 key={index} className="text-2xl font-bold font-heading mt-8 mb-4 text-foreground">
-            {line.slice(3)}
-          </h2>
-        );
-      } else if (line.startsWith('### ')) {
-        elements.push(
-          <h3 key={index} className="text-xl font-bold font-heading mt-6 mb-3 text-foreground">
-            {line.slice(4)}
-          </h3>
-        );
-      }
-      // Lists
-      else if (line.startsWith('- **')) {
-        const match = line.match(/- \*\*(.+?)\*\*:?\s*(.*)/);
-        if (match) {
-          elements.push(
-            <li key={index} className="text-muted-foreground ml-4 mb-2">
-              <strong className="text-foreground">{match[1]}</strong>
-              {match[2] && `: ${match[2]}`}
-            </li>
-          );
-        }
-      } else if (line.startsWith('- ')) {
-        elements.push(
-          <li key={index} className="text-muted-foreground ml-4 mb-2">{line.slice(2)}</li>
-        );
-      }
-      // Paragraphs
-      else if (line.trim()) {
-        // Handle inline code
-        const formattedLine = line.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-muted rounded text-sm font-mono text-primary">$1</code>');
-        elements.push(
-          <p 
-            key={index} 
-            className="text-muted-foreground leading-relaxed mb-4"
-            dangerouslySetInnerHTML={{ __html: formattedLine }}
-          />
-        );
-      }
-    });
-
-    return elements;
-  };
+  const body = stripLeadingTitle(article.content, article.title);
+  const headings = extractHeadings(body);
+  const others = allArticles.filter((a) => a.slug !== article.slug);
+  // Same-category articles first, then the newest of the rest.
+  const related = [...others.filter((a) => a.category === article.category), ...others.filter((a) => a.category !== article.category)].slice(0, 2);
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="relative h-[50vh] min-h-[400px] overflow-hidden">
-        <img
-          src={article.image}
-          alt={article.title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        
-        {/* Back Button */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
-          className="absolute top-6 left-6 z-10"
-        >
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.back()}
-            className="gap-2 bg-background/80 backdrop-blur-sm border-border/50 hover:bg-background"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </Button>
-        </motion.div>
+      <Navbar />
 
-        {/* Share Button */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
-          className="absolute top-6 right-6 z-10"
-        >
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleShare}
-            className="bg-background/80 backdrop-blur-sm border-border/50 hover:bg-background"
-          >
-            <Share2 className="w-4 h-4" />
-          </Button>
-        </motion.div>
-      </div>
-
-      {/* Content */}
-      <div className="section-container relative -mt-32 z-10">
-        <motion.article
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto bg-card border border-border/50 rounded-2xl p-8 md:p-12 shadow-2xl"
-        >
-          {/* Category */}
-          <span className="inline-block px-3 py-1 text-xs font-mono bg-primary/10 text-primary border border-primary/30 rounded-full mb-6">
-            {article.category}
-          </span>
-
-          {/* Title */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-6 text-foreground leading-tight">
-            {article.title}
-          </h1>
-
-          {/* Meta */}
-          <div className="flex items-center gap-6 text-sm text-muted-foreground mb-8 pb-8 border-b border-border/50">
-            <span className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              {article.date}
-            </span>
-            <span className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              {article.readTime}
-            </span>
-          </div>
-
-          {/* Description */}
-          <p className="text-lg text-muted-foreground leading-relaxed mb-8 italic border-l-4 border-primary/30 pl-6">
-            {article.description}
-          </p>
-
-          {/* Article Content */}
-          <div className="prose-custom">
-            {renderContent(article.content)}
-          </div>
-
-          {/* Footer */}
-          <div className="mt-12 pt-8 border-t border-border/50">
-            <Link href="/#knowledge">
-              <Button variant="outline" className="gap-2">
+      <main className="section-container pt-28 md:pt-36 pb-20">
+        <motion.article initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
+          {/* Top bar */}
+          <div className="flex items-center justify-between mb-8">
+            <Button asChild variant="ghost" size="sm" className="gap-2 -ml-3 text-muted-foreground">
+              <Link href="/articles">
                 <ArrowLeft className="w-4 h-4" />
-                Back to Articles
-              </Button>
-            </Link>
+                All articles
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setShareOpen(true)} className="gap-2">
+              <Share2 className="w-4 h-4" />
+              Share
+            </Button>
           </div>
-        </motion.article>
-      </div>
 
-      {/* Bottom Spacing */}
-      <div className="h-24" />
+          {/* Header */}
+          <header>
+            {article.category && (
+              <span className="inline-block px-3 py-1 text-xs font-mono bg-primary/10 text-primary border border-primary/30 rounded-full mb-5">
+                {article.category}
+              </span>
+            )}
+            <h1 className="text-3xl md:text-4xl lg:text-[2.9rem] font-extrabold font-heading tracking-tight text-foreground leading-[1.12] mb-6">
+              {article.title}
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8">{article.description}</p>
+
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pb-8 border-b border-border/60">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">SA</span>
+                <div className="leading-tight">
+                  <p className="text-sm font-semibold text-foreground">Sabbir Ahmad</p>
+                  <p className="text-xs text-muted-foreground">Software Engineer</p>
+                </div>
+              </div>
+              <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Calendar className="w-4 h-4" />
+                {article.date}
+              </span>
+              <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Clock className="w-4 h-4" />
+                {article.readTime}
+              </span>
+            </div>
+          </header>
+
+          {/* Cover */}
+          {article.image && (
+            <figure className="my-10">
+              <img
+                src={article.image}
+                alt={`Cover illustration for ${article.title}`}
+                className="w-full h-auto rounded-2xl border border-border/60 shadow-lg"
+              />
+            </figure>
+          )}
+
+          {/* In this article */}
+          {headings.length >= 3 && (
+            <nav aria-label="In this article" className="mb-10 rounded-xl border border-border/60 bg-muted/30 p-6">
+              <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">In this article</p>
+              <ol className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
+                {headings.map((h, i) => (
+                  <li key={h.id} className="flex gap-3 text-sm">
+                    <span className="font-mono text-primary">{String(i + 1).padStart(2, "0")}</span>
+                    <a href={`#${h.id}`} className="text-foreground/80 transition-colors hover:text-primary">
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
+
+          {/* Body */}
+          <ArticleBody content={body} />
+
+          {/* Share prompt */}
+          <div className="mt-14 flex flex-col items-start justify-between gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-6 sm:flex-row sm:items-center">
+            <div>
+              <p className="font-heading text-lg font-bold text-foreground">Found this useful?</p>
+              <p className="text-sm text-muted-foreground">Share it with someone who is building something similar.</p>
+            </div>
+            <Button onClick={() => setShareOpen(true)} className="gap-2 shrink-0">
+              <Share2 className="w-4 h-4" />
+              Share this article
+            </Button>
+          </div>
+
+          {/* Author */}
+          <aside className="mt-16 flex flex-col gap-5 rounded-2xl border border-border/60 bg-card p-6 sm:flex-row sm:items-center">
+            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">SA</span>
+            <div className="flex-1">
+              <p className="font-heading text-lg font-bold text-foreground">Written by Sabbir Ahmad</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                Software engineer building SaaS platforms, custom business systems, and AI-powered products for startups and growing businesses.
+              </p>
+            </div>
+            <Button asChild>
+              <Link href="/#contact">Work with me</Link>
+            </Button>
+          </aside>
+        </motion.article>
+
+        {/* More articles */}
+        {related.length > 0 && (
+          <section className="max-w-3xl mx-auto mt-16">
+            <div className="mb-6 flex items-end justify-between gap-4">
+              <h2 className="font-heading text-2xl font-bold text-foreground">Keep reading</h2>
+              <Link href="/articles" className="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-[0.15em] text-primary hover:underline">
+                View all <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2">
+              {related.map((a) => (
+                <Link key={a.slug} href={`/article/${a.slug}`} className="group overflow-hidden rounded-xl border border-border/60 bg-card transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg">
+                  {a.image && <img src={a.image} alt="" loading="lazy" className="aspect-[1200/630] w-full object-cover" />}
+                  <div className="p-5">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">{a.category}</p>
+                    <h3 className="mt-2 font-heading text-lg font-bold leading-snug text-foreground group-hover:text-primary">{a.title}</h3>
+                    <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                      {a.readTime} <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+
+      <ShareDialog open={shareOpen} onOpenChange={setShareOpen} title={article.title} description={article.description} />
+
+      <Footer />
     </div>
   );
 };

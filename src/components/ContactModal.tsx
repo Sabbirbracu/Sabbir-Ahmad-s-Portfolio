@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
+import { ContactMessage, useSubmitContactMutation } from "@/store/api/apiSlice";
 import { z } from "zod";
 
 interface ContactModalProps {
@@ -33,7 +34,7 @@ const ContactModal = ({ open, onOpenChange }: ContactModalProps) => {
     subject: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitContact, { isLoading: isSubmitting }] = useSubmitContactMutation();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -61,10 +62,18 @@ const ContactModal = ({ open, onOpenChange }: ContactModalProps) => {
       return;
     }
 
-    setIsSubmitting(true);
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      await submitContact(result.data as ContactMessage).unwrap(); // validated by contactSchema above
+    } catch (err) {
+      // Keep the form filled so the visitor doesn't lose their message.
+      const message = (err as { data?: { message?: string } })?.data?.message;
+      toast({
+        title: "Message not sent",
+        description: message || "Something went wrong. Please try again, or email me directly.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     toast({
       title: "Message sent!",
@@ -72,7 +81,6 @@ const ContactModal = ({ open, onOpenChange }: ContactModalProps) => {
     });
 
     setFormData({ name: "", email: "", subject: "", message: "" });
-    setIsSubmitting(false);
     onOpenChange(false);
   };
 

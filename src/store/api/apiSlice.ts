@@ -54,7 +54,7 @@ export interface Article {
   content: string;
   image?: string;
   date?: string;
-  readTime?: number;
+  readTime?: string;
   category?: string;
   published?: boolean;
 }
@@ -126,13 +126,15 @@ export const apiSlice = createApi({
     }),
 
     // ========== Projects endpoints ==========
-    getProjects: builder.query<Project[], { type?: string; featured?: boolean } | void>({
+    getProjects: builder.query<Project[], { type?: string; featured?: boolean; includeHidden?: boolean } | void>({
       query: (arg) => {
         // arg is `void` when the hook is called with no parameters
-        const params = (arg ?? {}) as { type?: string; featured?: boolean };
+        const params = (arg ?? {}) as { type?: string; featured?: boolean; includeHidden?: boolean };
         const queryParams = new URLSearchParams();
         if (params.type) queryParams.append("type", params.type);
         if (params.featured !== undefined) queryParams.append("featured", String(params.featured));
+        // Admin panel only: the server honours this solely for a valid admin token.
+        if (params.includeHidden) queryParams.append("includeHidden", "true");
         return `/projects${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
       },
       transformResponse: (response: any) => {
@@ -172,14 +174,39 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Projects", "Portfolio"],
     }),
+    // Saves the drag-and-drop display order: ids in the desired order, position i -> meta.order = i.
+    // The admin list updates its own order optimistically (see ProjectsSection); invalidating
+    // afterwards refreshes the server order and the public caches (homepage, All Projects).
+    reorderProjects: builder.mutation<{ success: boolean; data: Project[] }, string[]>({
+      query: (ids) => ({
+        url: "/projects/order",
+        method: "PUT",
+        body: { ids },
+      }),
+      // Only after a successful save: RTK also invalidates on failure, and the resulting failed
+      // refetch would show a misleading "couldn't load" toast instead of "order not saved".
+      invalidatesTags: (_result, error) => (error ? [] : ["Projects", "Portfolio"]),
+    }),
+    // AI import: turns pasted project notes into an unsaved Project draft.
+    generateProjectDraft: builder.mutation<Partial<Project>, string>({
+      query: (notes) => ({
+        url: "/projects/generate",
+        method: "POST",
+        body: { notes },
+      }),
+      transformResponse: (response: { data: Partial<Project> }) => response.data,
+    }),
 
     // ========== Articles endpoints ==========
+    // The API wraps results in { success, message, data }; unwrap like the projects endpoints do.
     getArticles: builder.query<Article[], void>({
       query: () => "/articles",
+      transformResponse: (response: { data?: Article[] }) => response?.data ?? [],
       providesTags: ["Articles"],
     }),
     getArticleBySlug: builder.query<Article, string>({
       query: (slug) => `/articles/${slug}`,
+      transformResponse: (response: { data: Article }) => response.data,
       providesTags: ["Articles"],
     }),
     createArticle: builder.mutation<{ success: boolean; data: Article }, Partial<Article>>({
@@ -269,6 +296,8 @@ export const {
   useCreateProjectMutation,
   useUpdateProjectMutation,
   useDeleteProjectMutation,
+  useReorderProjectsMutation,
+  useGenerateProjectDraftMutation,
   // Articles
   useGetArticlesQuery,
   useGetArticleBySlugQuery,
